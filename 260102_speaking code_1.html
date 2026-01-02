@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>粵語詞彙發音指南 (Google 語音版)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f4f7f9; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4">
+
+    <div id="app" class="w-full max-w-4xl bg-white shadow-2xl rounded-xl p-6 md:p-10">
+        <h1 id="header-title" class="text-3xl font-bold text-gray-800 text-center mb-6">粵語詞彙發音系統 (Google 語音版)</h1>
+        
+        <div id="breadcrumb" class="text-sm text-gray-500 mb-6 flex space-x-2 items-center">
+            <span class="cursor-pointer hover:text-blue-600 transition duration-150" onclick="renderHome()">主頁</span>
+            <span id="breadcrumb-book" class="hidden">/ <span class="font-medium text-gray-600 transition duration-150"></span></span>
+            <span id="breadcrumb-lesson" class="hidden">/ <span class="font-medium text-gray-800 transition duration-150"></span></span>
+        </div>
+
+        <div id="browser-tts-info" class="p-3 bg-blue-100 text-blue-700 rounded-lg border border-blue-400 mt-2 mb-6">
+            📢 使用 Google 網絡語音。請確保已連接互聯網。
+        </div>
+        
+        <div id="content"></div>
+    </div>
+
+<script type="module">
+    
+    // ==========================================
+    // ▼▼▼ 語速設定區 ▼▼▼
+    // ==========================================
+    // 1.0 = 正常速度
+    // 0.8 = 慢速
+    // 1.2 = 快速
+    const speechSpeed = 0.9; 
+
+    const learningMaterial = {
+        1: { 
+            title: "第一冊",
+            lessons: [
+                { id: 1, title: "第一課", words: [ 
+                    { text: "我", jyutping: "ngo5" }, { text: "你", jyutping: "nei5" }, { text: "是", jyutping: "si6" },
+                    { text: "女", jyutping: "neoi5", speakText: "餒" }, 
+                    { text: "你好", jyutping: "nei5 hou2" }, { text: "再見", jyutping: "zoi3 gin3" }, { text: "謝謝", jyutping: "ze6 ze6" } 
+                ] },
+                { id: 2, title: "第二課", words: [ 
+                    { text: "一", jyutping: "jat1" }, { text: "二", jyutping: "ji6" }, { text: "三", jyutping: "saam1" }, 
+                    { text: "四", jyutping: "sei3" }, { text: "五", jyutping: "ng5" }, { text: "六", jyutping: "luk6" }, 
+                    { text: "七", jyutping: "cat1" }, { text: "八", jyutping: "baat3" }, { text: "九", jyutping: "gau2" }, 
+                    { text: "十", jyutping: "sap6" }
+                ] },
+                { id: 3, title: "第三課 (多音字測試)", words: [
+                    { text: "行 (行走)", jyutping: "haang4", speakText: "杭" },
+                    { text: "行 (銀行)", jyutping: "hong4", speakText: "杭" }, 
+                    { text: "快樂", jyutping: "faai3 lok6", speakText: "快洛" },
+                    { text: "音樂", jyutping: "jam1 ngok6", speakText: "音岳" }
+                ] },
+                { id: 4, title: "第四課", words: [{ text: "屋企", jyutping: "uk1 kei2" }] }
+            ]
+        },
+
+        2: {
+            title: "第二冊",
+            lessons: [
+                { id: 5, title: "第五課", words: [
+                    { text: "覺得", jyutping: "gok3 dak1" }, 
+                    { text: "舒服", jyutping: "syu1 fuk6" }, 
+                    { text: "發燒", jyutping: "faat3 siu1", speakText: "發宵"},
+                    { text: "頭痛", jyutping: "tau4 tung3" }, 
+                    { text: "喉嚨痛", jyutping: "hau4 lung4 tung3" }, 
+                    { text: "肚瀉", jyutping: "tou5 se3" }, 
+                    { text: "醫院", jyutping: "ji1 jyun2" }, 
+                    { text: "護士", jyutping: "wu6 si6" }, 
+                    { text: "診斷", jyutping: "can2 dyun6" }, 
+                    { text: "感冒", jyutping: "gam2 mo6" }, 
+                    { text: "藥", jyutping: "joek6" }
+                ] },
+                { id: 6, title: "第六課", words: [{ text: "紅色", jyutping: "hung4 sik1" }] },
+                { id: 7, title: "第七課", words: [{ text: "爸爸", jyutping: "baa1 baa1" }] },
+                { id: 8, title: "第八課", words: [{ text: "一二三", jyutping: "yat1 yi6 saam1" }] },
+                { id: 9, title: "第九課", words: [{ text: "好食", jyutping: "hou2 sik6" }] },
+                { id: 10, title: "第十課", words: [{ text: "香港", jyutping: "hoeng1 gong2" }] }
+            ]
+        },
+        3: { title: "第三冊", lessons: Array.from({ length: 5 }, (_, i) => ({ id: i + 1, title: `第${i + 1}課`, words: [ { text: `商業用語`, jyutping: "soeng1 yip6" } ] })) },
+        4: { title: "第四冊", lessons: Array.from({ length: 5 }, (_, i) => ({ id: i + 1, title: `第${i + 1}課`, words: [ { text: `口語表達`, jyutping: "hau2 yu5" } ] })) }
+    };
+    
+    // --- 核心邏輯 ---
+    let currentView = 'home';
+    let selectedBook = null;
+    let selectedLesson = null;
+    const contentDiv = document.getElementById('content');
+    const headerTitle = document.getElementById('header-title');
+    const breadcrumbBook = document.getElementById('breadcrumb-book');
+    const breadcrumbLesson = document.getElementById('breadcrumb-lesson');
+    let currentAudio = null;
+
+    function speakCantonese(text) {
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+        }
+        
+        const encodedText = encodeURIComponent(text);
+        // Google TTS URL
+        const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=zh-yue&total=1&idx=0&textlen=${text.length}&client=tw-ob&prev=input&ttsspeed=1`;
+        
+        currentAudio = new Audio(url);
+        
+        // --- 這裡就是控制語速的關鍵 ---
+        currentAudio.playbackRate = speechSpeed; 
+        
+        currentAudio.onerror = function() { alert("播放失敗。請檢查網絡連接。"); };
+        currentAudio.play().catch(e => console.error(e));
+    }
+
+    window.handlePronunciationRequest = function(text, jyutping, speakText) {
+        const textToSpeak = speakText ? speakText : text;
+        console.log(`Speaking: ${textToSpeak} (Speed: ${speechSpeed})`);
+        speakCantonese(textToSpeak);
+    }
+
+    // --- 渲染函數 ---
+    function renderHome() {
+        currentView = 'home';
+        selectedBook = null;
+        selectedLesson = null;
+        headerTitle.textContent = "粵語詞彙學習系統";
+        breadcrumbBook.classList.add('hidden');
+        breadcrumbLesson.classList.add('hidden');
+        
+        let html = '<div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+        Object.keys(learningMaterial).forEach(bookId => {
+            html += `<button onclick="selectBook(${bookId})" class="p-6 bg-blue-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-blue-600 transition duration-150 transform hover:scale-105">${learningMaterial[bookId].title}</button>`;
+        });
+        html += '</div>';
+        contentDiv.innerHTML = html;
+    }
+
+    function renderBook() {
+        const book = learningMaterial[selectedBook];
+        headerTitle.textContent = `${book.title} - 選擇課堂`;
+        breadcrumbBook.querySelector('span').textContent = book.title;
+        breadcrumbBook.classList.remove('hidden');
+        breadcrumbLesson.classList.add('hidden');
+        
+        let html = '<div class="grid grid-cols-2 md:grid-cols-5 gap-4">';
+        book.lessons.forEach(lesson => {
+            html += `<button onclick="selectLesson(${lesson.id})" class="p-4 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-150">${lesson.title}</button>`;
+        });
+        html += '</div>';
+        contentDiv.innerHTML = html;
+    }
+
+    function renderLesson() {
+        const book = learningMaterial[selectedBook];
+        const lesson = book.lessons.find(l => l.id === selectedLesson);
+        headerTitle.textContent = `${book.title} - ${lesson.title}`;
+        breadcrumbLesson.querySelector('span').textContent = lesson.title;
+        breadcrumbLesson.classList.remove('hidden');
+        
+        let html = `
+            <div class="mb-6 flex justify-start">
+                <button onclick="renderBook()" class="flex items-center space-x-2 px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 transition duration-150">
+                    <span>⬅ 返回課堂列表</span>
+                </button>
+            </div>
+            <div class="space-y-4">
+        `;
+        lesson.words.forEach((item) => {
+            html += `
+                <div class="p-4 bg-gray-100 rounded-lg shadow-inner cursor-pointer hover:bg-yellow-100 transition duration-150 border-l-4 border-red-500"
+                    onclick="handlePronunciationRequest('${item.text}', '${item.jyutping}', '${item.speakText || ''}')">
+                    <div class="flex justify-between items-center">
+                        <div class="text-3xl font-bold text-gray-800">${item.text}</div>
+                        <button class="bg-red-500 text-white text-sm font-medium px-3 py-1 rounded-full shadow-md hover:bg-red-600 transition duration-150">🔊 播放</button>
+                    </div>
+                    <div class="text-sm text-gray-500 mt-1">${item.jyutping}</div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        contentDiv.innerHTML = html;
+    }
+
+    window.selectBook = (id) => { selectedBook = id; renderBook(); };
+    window.selectLesson = (id) => { selectedLesson = id; renderLesson(); };
+    window.renderHome = renderHome;
+    window.renderBook = renderBook;
+    window.onload = renderHome;
+</script>
+</body>
+</html>
