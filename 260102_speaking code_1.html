@@ -3,19 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>粵語詞彙發音指南 (Google 語音版)</title>
-    
+    <title>粵語詞彙發音指南 (完整詞彙書寫版)</title>
     <meta name="referrer" content="no-referrer">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+
     <style>
         body { font-family: 'Noto Sans TC', sans-serif; background-color: #f4f7f9; }
+        canvas { touch-action: none; }
+        
+        .writing-container {
+            width: 340px; 
+            height: 340px; 
+            position: relative;
+            background-color: #fff;
+            border: 3px dashed #d1d5db;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        /* 字卡切換按鈕樣式 */
+        .char-tab {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid #e5e7eb;
+            background-color: white;
+            color: #374151;
+        }
+        .char-tab.active {
+            background-color: #3b82f6; /* 藍色 */
+            color: white;
+            border-color: #2563eb;
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4">
 
-    <div id="app" class="w-full max-w-4xl bg-white shadow-2xl rounded-xl p-6 md:p-10">
-        <h1 id="header-title" class="text-3xl font-bold text-gray-800 text-center mb-6">粵語詞彙發音系統 (Google 語音版)</h1>
+    <div id="app" class="w-full max-w-4xl bg-white shadow-2xl rounded-xl p-6 md:p-10 relative z-10">
+        <h1 id="header-title" class="text-3xl font-bold text-gray-800 text-center mb-6">粵語詞彙發音系統</h1>
         
         <div id="breadcrumb" class="text-sm text-gray-500 mb-6 flex space-x-2 items-center">
             <span class="cursor-pointer hover:text-blue-600 transition duration-150" onclick="renderHome()">主頁</span>
@@ -23,23 +60,54 @@
             <span id="breadcrumb-lesson" class="hidden">/ <span class="font-medium text-gray-800 transition duration-150"></span></span>
         </div>
 
-        <div id="browser-tts-info" class="p-3 bg-blue-100 text-blue-700 rounded-lg border border-blue-400 mt-2 mb-6">
-            📢 使用 Google 網絡語音。請確保已連接互聯網。
+        <div id="browser-tts-info" class="p-3 bg-blue-100 text-blue-700 rounded-lg border border-blue-400 mt-2 mb-6 text-sm">
+            📢 <b>Google 語音</b>已啟用。點擊「寫字」可練習整個詞彙的筆順。
         </div>
         
         <div id="content"></div>
     </div>
 
+    <div id="writing-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden z-50 flex items-center justify-center p-2">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md p-4 flex flex-col items-center relative">
+            
+            <div class="w-full flex justify-between items-center mb-2 border-b pb-2">
+                <h3 class="text-xl font-bold text-gray-700">寫字練習</h3>
+                <button onclick="closeWritingModal()" class="text-gray-400 hover:text-red-500 text-2xl font-bold">&times;</button>
+            </div>
+
+            <div id="char-tabs-container" class="flex space-x-2 mb-2 overflow-x-auto py-2 w-full justify-center">
+                </div>
+
+            <div class="writing-container relative">
+                <div id="hanzi-target" class="absolute inset-0 z-0"></div>
+                <canvas id="writing-canvas" width="340" height="340" class="absolute inset-0 z-10 cursor-crosshair"></canvas>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3 mt-4 w-full">
+                <button onclick="replayAnimation()" class="py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg shadow transition flex justify-center items-center">
+                    🔄 重播筆順
+                </button>
+                <button onclick="clearCanvas()" class="py-3 bg-yellow-400 hover:bg-yellow-500 text-white font-bold rounded-lg shadow transition flex justify-center items-center">
+                    🧹 清除筆跡
+                </button>
+            </div>
+
+            <button id="next-char-btn" onclick="nextChar()" class="mt-3 w-full py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold rounded-lg transition hidden">
+                下一個字 ➡
+            </button>
+            
+            <button onclick="closeWritingModal()" class="mt-2 w-full py-2 text-gray-400 hover:text-gray-600 font-medium text-sm">
+                關閉視窗
+            </button>
+        </div>
+    </div>
+
 <script type="module">
     
-    // ==========================================
-    // ▼▼▼ 語速設定區 ▼▼▼
-    // ==========================================
-    // 1.0 = 正常速度
-    // 0.8 = 慢速
-    // 1.2 = 快速
+    // --- 語速設定 ---
     const speechSpeed = 0.9; 
 
+    // --- 資料設定 ---
     const learningMaterial = {
         1: { 
             title: "第一冊",
@@ -64,22 +132,20 @@
                 { id: 4, title: "第四課", words: [{ text: "屋企", jyutping: "uk1 kei2" }] }
             ]
         },
-
         2: {
             title: "第二冊",
             lessons: [
+                {
+                    id: 4, title: "第四課", words:[
+                    {text: "北京", jyutping: "bak1 ging1"}, {text: "多雲", jyutping: "do1 wan4"}, {text: "有霧", jyutping: "jau5 mou6"},
+                    {text: "陰天", jyutping: "jam1 tin1"}, {text: "颱風", jyutping: "toi4 fung1"}, {text: "西安", jyutping: "sai1 on1"}
+                ] },
                 { id: 5, title: "第五課", words: [
-                    { text: "覺得", jyutping: "gok3 dak1" }, 
-                    { text: "舒服", jyutping: "syu1 fuk6" }, 
-                    { text: "發燒", jyutping: "faat3 siu1", speakText: "發宵"},
-                    { text: "頭痛", jyutping: "tau4 tung3" }, 
-                    { text: "喉嚨痛", jyutping: "hau4 lung4 tung3" }, 
-                    { text: "肚瀉", jyutping: "tou5 se3" }, 
-                    { text: "醫院", jyutping: "ji1 jyun2" }, 
-                    { text: "護士", jyutping: "wu6 si6" }, 
-                    { text: "診斷", jyutping: "can2 dyun6" }, 
-                    { text: "感冒", jyutping: "gam2 mo6" }, 
-                    { text: "藥", jyutping: "joek6" }
+                    { text: "覺得", jyutping: "gok3 dak1" }, { text: "舒服", jyutping: "syu1 fuk6" }, { text: "發燒", jyutping: "faat3 siu1", speakText: "發宵"},
+                    { text: "頭痛", jyutping: "tau4 tung3" }, { text: "喉嚨痛", jyutping: "hau4 lung4 tung3" }, { text: "肚瀉", jyutping: "tou5 se3" }, 
+                    { text: "醫院", jyutping: "ji1 jyun2" }, { text: "護士", jyutping: "wu6 si6" }, { text: "診斷", jyutping: "can2 dyun6" }, 
+                    { text: "感冒", jyutping: "gam2 mo6" }, { text: "藥", jyutping: "joek6" }, { text: "生病", jyutping: "saang1 beng6" },
+                    { text: "流鼻涕", jyutping: "lau4 bei6 tai3"}, { text: "康復", jyutping: "hong1 fuk6"}, { text: "健康", jyutping: "gin1 hong1"}
                 ] },
                 { id: 6, title: "第六課", words: [{ text: "紅色", jyutping: "hung4 sik1" }] },
                 { id: 7, title: "第七課", words: [{ text: "爸爸", jyutping: "baa1 baa1" }] },
@@ -92,7 +158,7 @@
         4: { title: "第四冊", lessons: Array.from({ length: 5 }, (_, i) => ({ id: i + 1, title: `第${i + 1}課`, words: [ { text: `口語表達`, jyutping: "hau2 yu5" } ] })) }
     };
     
-    // --- 核心邏輯 ---
+    // --- 核心變數 ---
     let currentView = 'home';
     let selectedBook = null;
     let selectedLesson = null;
@@ -102,30 +168,165 @@
     const breadcrumbLesson = document.getElementById('breadcrumb-lesson');
     let currentAudio = null;
 
+    // --- Google 語音 ---
     function speakCantonese(text) {
         if (currentAudio) {
             currentAudio.pause();
             currentAudio.currentTime = 0;
         }
-        
         const encodedText = encodeURIComponent(text);
-        // Google TTS URL
         const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodedText}&tl=zh-yue&total=1&idx=0&textlen=${text.length}&client=tw-ob&prev=input&ttsspeed=1`;
-        
         currentAudio = new Audio(url);
-        
-        // --- 這裡就是控制語速的關鍵 ---
         currentAudio.playbackRate = speechSpeed; 
-        
         currentAudio.onerror = function() { alert("播放失敗。請檢查網絡連接。"); };
         currentAudio.play().catch(e => console.error(e));
     }
 
     window.handlePronunciationRequest = function(text, jyutping, speakText) {
         const textToSpeak = speakText ? speakText : text;
-        console.log(`Speaking: ${textToSpeak} (Speed: ${speechSpeed})`);
         speakCantonese(textToSpeak);
     }
+
+    // ==========================================
+    // ▼▼▼ 寫字板 + 多字切換邏輯 ▼▼▼
+    // ==========================================
+    const modal = document.getElementById('writing-modal');
+    const canvas = document.getElementById('writing-canvas');
+    const ctx = canvas.getContext('2d');
+    const charTabsContainer = document.getElementById('char-tabs-container');
+    const nextCharBtn = document.getElementById('next-char-btn');
+    
+    let isDrawing = false;
+    let hanziWriterInstance = null;
+    let currentWordArr = []; // 存放拆分後的字詞 ["發", "燒"]
+    let currentCharIndex = 0; // 目前選中的是第幾個字
+
+    // 畫筆樣式
+    ctx.lineWidth = 10;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = 'rgba(37, 99, 235, 0.6)'; 
+
+    window.openWritingModal = function(text) {
+        modal.classList.remove('hidden');
+        
+        // 1. 拆分詞彙 (去除括號)
+        const cleanText = text.split(' ')[0]; 
+        currentWordArr = cleanText.split(''); // 將 "發燒" 拆成 ["發", "燒"]
+        
+        // 2. 渲染上方的字卡切換按鈕
+        renderCharTabs();
+        
+        // 3. 預設選中第一個字
+        selectChar(0);
+    }
+
+    function renderCharTabs() {
+        charTabsContainer.innerHTML = '';
+        currentWordArr.forEach((char, index) => {
+            const btn = document.createElement('div');
+            btn.className = `char-tab ${index === currentCharIndex ? 'active' : ''}`;
+            btn.innerText = char;
+            btn.onclick = () => selectChar(index);
+            charTabsContainer.appendChild(btn);
+        });
+    }
+
+    window.selectChar = function(index) {
+        currentCharIndex = index;
+        
+        // 更新按鈕樣式
+        const tabs = document.querySelectorAll('.char-tab');
+        tabs.forEach((tab, i) => {
+            if(i === index) tab.classList.add('active');
+            else tab.classList.remove('active');
+        });
+
+        // 顯示/隱藏「下一個字」按鈕
+        if (index < currentWordArr.length - 1) {
+            nextCharBtn.classList.remove('hidden');
+        } else {
+            nextCharBtn.classList.add('hidden');
+        }
+
+        // 清除畫布
+        clearCanvas();
+        document.getElementById('hanzi-target').innerHTML = '';
+
+        // 載入筆順動畫
+        const char = currentWordArr[index];
+        hanziWriterInstance = HanziWriter.create('hanzi-target', char, {
+            width: 340,
+            height: 340,
+            padding: 20,
+            showOutline: true,
+            strokeAnimationSpeed: 1,
+            delayBetweenStrokes: 200,
+            strokeColor: '#D1D5DB', 
+            radicalColor: '#9CA3AF',
+            outlineColor: '#E5E7EB',
+        });
+
+        hanziWriterInstance.animateCharacter();
+    }
+
+    window.nextChar = function() {
+        if (currentCharIndex < currentWordArr.length - 1) {
+            selectChar(currentCharIndex + 1);
+        }
+    }
+
+    window.replayAnimation = function() {
+        if(hanziWriterInstance) {
+            clearCanvas();
+            hanziWriterInstance.animateCharacter();
+        }
+    }
+
+    window.closeWritingModal = function() {
+        modal.classList.add('hidden');
+    }
+
+    window.clearCanvas = function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // --- 畫畫事件監聽 ---
+    function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    function startDraw(e) {
+        isDrawing = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+        e.preventDefault(); 
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        const pos = getPos(e);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        e.preventDefault();
+    }
+
+    function endDraw() {
+        isDrawing = false;
+        ctx.beginPath();
+    }
+
+    canvas.addEventListener('mousedown', startDraw);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', endDraw);
+    canvas.addEventListener('mouseout', endDraw);
+    canvas.addEventListener('touchstart', startDraw, { passive: false });
+    canvas.addEventListener('touchmove', draw, { passive: false });
+    canvas.addEventListener('touchend', endDraw);
 
     // --- 渲染函數 ---
     function renderHome() {
@@ -135,7 +336,6 @@
         headerTitle.textContent = "粵語詞彙學習系統";
         breadcrumbBook.classList.add('hidden');
         breadcrumbLesson.classList.add('hidden');
-        
         let html = '<div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
         Object.keys(learningMaterial).forEach(bookId => {
             html += `<button onclick="selectBook(${bookId})" class="p-6 bg-blue-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-blue-600 transition duration-150 transform hover:scale-105">${learningMaterial[bookId].title}</button>`;
@@ -150,7 +350,6 @@
         breadcrumbBook.querySelector('span').textContent = book.title;
         breadcrumbBook.classList.remove('hidden');
         breadcrumbLesson.classList.add('hidden');
-        
         let html = '<div class="grid grid-cols-2 md:grid-cols-5 gap-4">';
         book.lessons.forEach(lesson => {
             html += `<button onclick="selectLesson(${lesson.id})" class="p-4 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition duration-150">${lesson.title}</button>`;
@@ -174,15 +373,24 @@
             </div>
             <div class="space-y-4">
         `;
+        
         lesson.words.forEach((item) => {
             html += `
-                <div class="p-4 bg-gray-100 rounded-lg shadow-inner cursor-pointer hover:bg-yellow-100 transition duration-150 border-l-4 border-red-500"
-                    onclick="handlePronunciationRequest('${item.text}', '${item.jyutping}', '${item.speakText || ''}')">
-                    <div class="flex justify-between items-center">
+                <div class="p-4 bg-gray-100 rounded-lg shadow-inner border-l-4 border-red-500 flex justify-between items-center hover:bg-yellow-50 transition duration-150">
+                    <div>
                         <div class="text-3xl font-bold text-gray-800">${item.text}</div>
-                        <button class="bg-red-500 text-white text-sm font-medium px-3 py-1 rounded-full shadow-md hover:bg-red-600 transition duration-150">🔊 播放</button>
+                        <div class="text-sm text-gray-500 mt-1">${item.jyutping}</div>
                     </div>
-                    <div class="text-sm text-gray-500 mt-1">${item.jyutping}</div>
+                    <div class="flex space-x-2">
+                        <button onclick="handlePronunciationRequest('${item.text}', '${item.jyutping}', '${item.speakText || ''}')" 
+                                class="bg-red-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-600 active:scale-95 transition flex items-center">
+                            🔊 <span class="hidden md:inline ml-1">播放</span>
+                        </button>
+                        <button onclick="openWritingModal('${item.text}')" 
+                                class="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 active:scale-95 transition flex items-center">
+                            📝 <span class="hidden md:inline ml-1">寫字</span>
+                        </button>
+                    </div>
                 </div>
             `;
         });
@@ -194,9 +402,10 @@
     window.selectLesson = (id) => { selectedLesson = id; renderLesson(); };
     window.renderHome = renderHome;
     window.renderBook = renderBook;
+    window.selectChar = selectChar;
+    window.nextChar = nextChar;
+    window.replayAnimation = replayAnimation;
     window.onload = renderHome;
 </script>
 </body>
-
 </html>
-
