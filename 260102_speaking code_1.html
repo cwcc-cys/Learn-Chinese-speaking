@@ -125,14 +125,32 @@
 <script type="module">
     const speechSpeed = 0.9; 
 
-    // --- 資料設定區 (已更新第六課解釋) ---
+
+    // ▼▼▼ 資料設定區
     const learningMaterial = {
         1: { 
-            title: "第一冊",
+            title: "初中第一冊",
+            lessons: [
+                { id: 1, title: "第一課", words: [ 
+                    { text: "搬家", jyutping: "bun1 gaa1", meaningZH: "遷移住所，搬往新家。", meaningEN: "Moving house" },
+
+                ] },
+                { id: 2, title: "第二課", words: [ 
+                    { text: "一", jyutping: "jat1" }, { text: "二", jyutping: "ji6" }, { text: "三", jyutping: "saam1" }, 
+
+                ] },
+                { id: 3, title: "第三課", words: [
+                    { text: "一日三餐", jyutping: "jat1 jat6 saam1 caan1", meaningZH: "每天早、午、晚三頓飯。", meaningEN: "Three meals a day" },
+
+                ] }
+            ]
+        },
+        2: {
+            title: "初中第二冊",
             lessons: [
                 { id: 1, title: "第一課〈我們搬家了〉", words: [ 
                     { text: "搬家", jyutping: "bun1 gaa1", meaningZH: "遷移住所，搬往新家。", meaningEN: "Moving house" },
-                    { text: "一幢", jyutping: "jat1 zong6", meaningZH: "量詞，用於建築物 (例如：一幢大廈)。", meaningEN: "A block (quantifier for buildings)" },
+                    { text: "一幢", jyutping: "jat1 zong6", meaningZH: "量詞，用於建築物。", meaningEN: "A block (building)" },
                     { text: "大廈", jyutping: "daai6 haa6", meaningZH: "高大的樓房建築。", meaningEN: "Building; Mansion" },
                 ] },
                 { id: 2, title: "第二課〈我的房間〉", words: [ 
@@ -147,51 +165,49 @@
                     { text: "午餐", jyutping: "ng5 caan1", meaningZH: "中午吃的飯。", meaningEN: "Lunch" },
                     { text: "晚餐", jyutping: "maan5 caan1", meaningZH: "晚上吃的飯。", meaningEN: "Dinner" },
                     { text: "麵包", jyutping: "min6 baau1", meaningZH: "用麵粉烘烤製成的食品。", meaningEN: "Bread" },
-                    { text: "粉麵", jyutping: "fan2 min6", meaningZH: "米粉和麵條的統稱。", meaningEN: "Noodles and rice noodles" },
-                    { text: "雞蛋", jyutping: "gai1 daan2", meaningZH: "母雞生的蛋，常見食物。", meaningEN: "Egg" },
+                    { text: "粉麵", jyutping: "fan2 min6", meaningZH: "米粉和麵條的統稱。", meaningEN: "Noodles" },
+                    { text: "雞蛋", jyutping: "gai1 daan2", meaningZH: "母雞生的蛋。", meaningEN: "Egg" },
                     { text: "牛奶", jyutping: "ngau4 naai5", meaningZH: "母牛分泌的乳汁。", meaningEN: "Milk" },
-                    { text: "果汁", jyutping: "gwo2 zap1", meaningZH: "用水果壓榨出來的汁液。", meaningEN: "Fruit juice" },
-
-                ] }
-            ]
-        },
-        2: {
-            title: "第二冊",
-            lessons: [
+                    { text: "果汁", jyutping: "gwo2 zap1", meaningZH: "水果壓榨的汁液。", meaningEN: "Fruit juice" },
+                ] },
                 { id: 4, title: "第四課〈我秋天去北京〉", words:[
-                    {text: "北京", jyutping: "bak1 ging1", meaningZH: "中國的首都", meaningEN: "The capital if China" }, {text: "多雲", jyutping: "do1 wan4"}, {text: "有霧", jyutping: "jau5 mou6"},
-                    {text: "陰天", jyutping: "jam1 tin1"}, {text: "颱風", jyutping: "toi4 fung1"}, {text: "西安", jyutping: "sai1 on1"},
-                    { text: "大雪", jyutping: "dai6 syut3", meaningZH: ""}
+                    { text: "北京", jyutping: "bak1 ging1", meaningZH: "中國的首都。", meaningEN: "Beijing" }, 
+                    { text: "多雲", jyutping: "do1 wan4", meaningZH: "雲層較多。", meaningEN: "Cloudy" }, 
+                    { text: "有霧", jyutping: "jau5 mou6", meaningZH: "有霧氣，能見度低。", meaningEN: "Foggy" },
+                    { text: "陰天", jyutping: "jam1 tin1", meaningZH: "天色灰暗，無陽光。", meaningEN: "Overcast" }, 
+                    { text: "颱風", jyutping: "toi4 fung1", meaningZH: "強烈的熱帶氣旋。", meaningEN: "Typhoon" }, 
+                    { text: "西安", jyutping: "sai1 on1", meaningZH: "中國歷史古都。", meaningEN: "Xi'an" },
+                    { text: "大雪", jyutping: "dai6 syut3", meaningZH: "降雪量很大。", meaningEN: "Heavy snow"}
                 ] },
                 { id: 5, title: "第五課〈我生病了〉", words: [
-                    { text: "覺得", jyutping: "gok3 dak1", meaningZH: "認為；感到。", meaningEN: "To feel; to think" }, 
-                    { text: "舒服", jyutping: "syu1 fuk6", meaningZH: "身心感到輕鬆愉快。", meaningEN: "Comfortable" }, 
-                    { text: "發燒", jyutping: "faat3 siu1", speakText: "發宵", meaningZH: "體溫異常升高，通常是生病的徵兆。", meaningEN: "Fever" },
+                    { text: "覺得", jyutping: "gok3 dak1", meaningZH: "認為；感到。", meaningEN: "To feel" }, 
+                    { text: "舒服", jyutping: "syu1 fuk6", meaningZH: "身心輕鬆愉快。", meaningEN: "Comfortable" }, 
+                    { text: "發燒", jyutping: "faat3 siu1", speakText: "發宵", meaningZH: "體溫異常升高。", meaningEN: "Fever" },
                     { text: "頭痛", jyutping: "tau4 tung3", meaningZH: "頭部疼痛。", meaningEN: "Headache" }, 
-                    { text: "喉嚨痛", jyutping: "hau4 lung4 tung3", meaningZH: "咽喉部位疼痛。", meaningEN: "Sore throat" }, 
-                    { text: "肚瀉", jyutping: "tou5 se3", meaningZH: "腹瀉，拉肚子。", meaningEN: "Diarrhea" }, 
+                    { text: "喉嚨痛", jyutping: "hau4 lung4 tung3", meaningZH: "咽喉疼痛。", meaningEN: "Sore throat" }, 
+                    { text: "肚瀉", jyutping: "tou5 se3", meaningZH: "腹瀉。", meaningEN: "Diarrhea" }, 
                     { text: "醫院", jyutping: "ji1 jyun2", meaningZH: "治療病人的機構。", meaningEN: "Hospital" }, 
-                    { text: "護士", jyutping: "wu6 si6", meaningZH: "負責護理病人的人員。", meaningEN: "Nurse" }, 
-                    { text: "診斷", jyutping: "can2 dyun6", meaningZH: "醫生判斷病人的病情。", meaningEN: "Diagnosis" }, 
-                    { text: "感冒", jyutping: "gam2 mo6", meaningZH: "上呼吸道感染。", meaningEN: "Cold; Flu" }, 
+                    { text: "護士", jyutping: "wu6 si6", meaningZH: "護理病人的人員。", meaningEN: "Nurse" }, 
+                    { text: "診斷", jyutping: "can2 dyun6", meaningZH: "判斷病情。", meaningEN: "Diagnosis" }, 
+                    { text: "感冒", jyutping: "gam2 mo6", meaningZH: "上呼吸道感染。", meaningEN: "Cold" }, 
                     { text: "藥", jyutping: "joek6", meaningZH: "治療疾病的物質。", meaningEN: "Medicine" },
-                    { text: "生病", jyutping: "saang1 beng6", meaningZH: "身體不舒服，患病。", meaningEN: "Sick" },
+                    { text: "生病", jyutping: "saang1 beng6", meaningZH: "患病。", meaningEN: "Sick" },
                     { text: "流鼻涕", jyutping: "lau4 bei6 tai3", meaningZH: "鼻腔流出液體。", meaningEN: "Runny nose" },
                     { text: "康復", jyutping: "hong1 fuk6", meaningZH: "恢復健康。", meaningEN: "Recover" },
-                    { text: "健康", jyutping: "gin1 hong1", meaningZH: "身體好，沒有生病。", meaningEN: "Health" }
+                    { text: "健康", jyutping: "gin1 hong1", meaningZH: "身體好。", meaningEN: "Health" }
                 ] },
                 { id: 6, title: "第六課〈我的寵物〉", words: [
-                    { text: "養", jyutping: "joung5", meaningZH: "飼養；照顧動物。", meaningEN: "To raise; to keep (a pet)" }, 
-                    { text: "四歲", jyutping: "sei3 seoi3", meaningZH: "年齡是四歲。", meaningEN: "Four years old" }, 
-                    { text: "聰明", jyutping: "cung1 ming4", meaningZH: "天資高，學習能力強。", meaningEN: "Smart; clever" },
-                    { text: "可愛", jyutping: "ho2 oi3", meaningZH: "令人喜愛。", meaningEN: "Cute; lovely" }, 
-                    { text: "棕色", jyutping: "zung1 sik1", meaningZH: "像樹幹或咖啡的顏色。", meaningEN: "Brown" }, 
-                    { text: "亮晶晶", jyutping: "loeng6 zing1 zing1", meaningZH: "閃亮耀眼的樣子。", meaningEN: "Sparkling; shiny" },
-                    { text: "瘦小", jyutping: "sau3 siu2", meaningZH: "身材瘦弱矮小。", meaningEN: "Thin and small" }, 
-                    { text: "活潑", jyutping: "wut6 put3", meaningZH: "生動自然，不呆板。", meaningEN: "Lively; active" }, 
-                    { text: "好動", jyutping: "hou3 dung6", speakText: "枆動", meaningZH: "喜歡活動，不愛靜坐。", meaningEN: "Active; energetic" },
-                    { text: "餵", jyutping: "wai3", meaningZH: "給動物或人吃東西。", meaningEN: "To feed" }, 
-                    { text: "嘈吵", jyutping: "cou4 caau2", meaningZH: "聲音雜亂刺耳。", meaningEN: "Noisy" }
+                    { text: "養", jyutping: "joung5", meaningZH: "飼養。", meaningEN: "To raise" }, 
+                    { text: "四歲", jyutping: "sei3 seoi3", meaningZH: "年齡四歲。", meaningEN: "Four years old" }, 
+                    { text: "聰明", jyutping: "cung1 ming4", meaningZH: "天資高。", meaningEN: "Smart" },
+                    { text: "可愛", jyutping: "ho2 oi3", meaningZH: "令人喜愛。", meaningEN: "Cute" }, 
+                    { text: "棕色", jyutping: "zung1 sik1", meaningZH: "像咖啡的顏色。", meaningEN: "Brown" }, 
+                    { text: "亮晶晶", jyutping: "loeng6 zing1 zing1", meaningZH: "閃亮耀眼。", meaningEN: "Sparkling" },
+                    { text: "瘦小", jyutping: "sau3 siu2", meaningZH: "身材瘦弱。", meaningEN: "Thin and small" }, 
+                    { text: "活潑", jyutping: "wut6 put3", meaningZH: "生動自然。", meaningEN: "Lively" }, 
+                    { text: "好動", jyutping: "hou3 dung6", speakText: "枆動", meaningZH: "喜歡活動。", meaningEN: "Active" },
+                    { text: "餵", jyutping: "wai3", meaningZH: "給東西吃。", meaningEN: "To feed" }, 
+                    { text: "嘈吵", jyutping: "cou4 caau2", meaningZH: "聲音雜亂。", meaningEN: "Noisy" }
                 ] },
                 { id: 7, title: "第七課", words: [{ text: "爸爸", jyutping: "baa1 baa1" }] },
                 { id: 8, title: "第八課", words: [{ text: "一二三", jyutping: "yat1 yi6 saam1" }] },
@@ -199,146 +215,525 @@
                 { id: 10, title: "第十課", words: [{ text: "香港", jyutping: "hoeng1 gong2" }] }
             ]
         },
-        3: { title: "第三冊", lessons: Array.from({ length: 5 }, (_, i) => ({ id: i + 1, title: `第${i + 1}課`, words: [ { text: `商業用語`, jyutping: "soeng1 yip6" } ] })) },
-        4: { title: "第四冊", lessons: Array.from({ length: 5 }, (_, i) => ({ id: i + 1, title: `第${i + 1}課`, words: [ { text: `口語表達`, jyutping: "hau2 yu5" } ] })) },
-        5: { 
-            title: "IGCSE 詞彙",
+        3: { title: "初中第三冊", lessons: Array.from({ length: 5 }, (_, i) => ({ id: i + 1, title: `第${i + 1}課`, words: [ { text: `商業用語`, jyutping: "soeng1 yip6" } ] })) },
+        4: { title: "初中第四冊", lessons: Array.from({ length: 5 }, (_, i) => ({ id: i + 1, title: `第${i + 1}課`, words: [ { text: `口語表達`, jyutping: "hau2 yu5" } ] })) },
+
+        // ▼▼▼ IGCSE 新增部分 ▼▼▼
+5: { 
+            title: "IGCSE - 常見用詞 (High Frequency)",
             lessons: [
-                { id: 1, title: "常見用詞 (Common)", words: [
-                    { text: "我", jyutping: "ngo5", meaningZH: "第一人稱代詞。", meaningEN: "I; me" },
-                    { text: "你", jyutping: "nei5", meaningZH: "第二人稱代詞。", meaningEN: "You" },
-                    { text: "他", jyutping: "taa1", meaningZH: "第三人稱代詞 (男性)。", meaningEN: "He; him" },
-                    { text: "她", jyutping: "taa1", meaningZH: "第三人稱代詞 (女性)。", meaningEN: "She; her" },
-                    { text: "我們", jyutping: "ngo5 mun4", meaningZH: "第一人稱複數代詞。", meaningEN: "We; us" },
-                    { text: "中國", jyutping: "zung1 gwok3", meaningZH: "東亞國家。", meaningEN: "China" },
-                    { text: "英國", jyutping: "jing1 gwok3", meaningZH: "歐洲國家。", meaningEN: "UK; England" },
-                    { text: "美國", jyutping: "mei5 gwok3", meaningZH: "北美洲國家。", meaningEN: "USA" },
-                    { text: "一", jyutping: "jat1", meaningZH: "數字 1。", meaningEN: "One" },
-                    { text: "二", jyutping: "ji6", meaningZH: "數字 2。", meaningEN: "Two" },
-                    { text: "三", jyutping: "saam1", meaningZH: "數字 3。", meaningEN: "Three" },
-                    { text: "現在", jyutping: "jin6 zoi6", meaningZH: "目前的時間。", meaningEN: "Now" },
-                    { text: "星期一", jyutping: "sing1 kei4 jat1", meaningZH: "週一。", meaningEN: "Monday" },
-                    { text: "一月", jyutping: "jat1 jyut6", meaningZH: "年份的第一個月。", meaningEN: "January" },
-                    { text: "是", jyutping: "si6", meaningZH: "表示存在或屬於。", meaningEN: "To be (am, is, are)" },
-                    { text: "不", jyutping: "bat1", meaningZH: "否定詞。", meaningEN: "No; not" },
-                    { text: "嗎", jyutping: "maa3", meaningZH: "疑問助詞。", meaningEN: "Question particle" },
-                    { text: "這裏", jyutping: "ze2 leoi5", meaningZH: "這個地方。", meaningEN: "Here" },
-                    { text: "你好", jyutping: "nei5 hou2", meaningZH: "見面時的問候。", meaningEN: "Hello" },
-                    { text: "謝謝", jyutping: "ze6 ze6", meaningZH: "表示感激。", meaningEN: "Thank you" }
+                { 
+                    id: 1, 
+                    title: "代詞與人物", 
+                    words: [
+                        { text: "我", jyutping: "ngo5", meaningZH: "第一人稱單數。", meaningEN: "I, me" },
+                        { text: "你", jyutping: "nei5", meaningZH: "第二人稱單數。", meaningEN: "You" },
+                        { text: "他", jyutping: "taa1", meaningZH: "第三人稱單數(男)。", meaningEN: "He, him" },
+                        { text: "她", jyutping: "taa1", meaningZH: "第三人稱單數(女)。", meaningEN: "She, her, it" },
+                        { text: "我們", jyutping: "ngo5 mun4", meaningZH: "第一人稱複數。", meaningEN: "We, us" },
+                        { text: "你們", jyutping: "nei5 mun4", meaningZH: "第二人稱複數。", meaningEN: "You (plural)" },
+                        { text: "他們", jyutping: "taa1 mun4", meaningZH: "第三人稱複數。", meaningEN: "They, them" },
+                        { text: "這", jyutping: "ze2", meaningZH: "指較近的人或物。", meaningEN: "This" },
+                        { text: "那", jyutping: "naa5", meaningZH: "指較遠的人或物。", meaningEN: "That" }
                     ] 
                 },
                 { 
                     id: 2, 
-                    title: "Topic Aera A (日常與生活)", 
+                    title: "國家與語言", 
                     words: [
-                        { text: "地方", jyutping: "dei6 fong1", meaningZH: "區域或地點。", meaningEN: "Place" },
-                        { text: "城市", jyutping: "sing4 si5", meaningZH: "人口密集的聚落。", meaningEN: "City" },
-                        { text: "市中心", jyutping: "si5 zung1 sam1", meaningZH: "城市的商業核心區。", meaningEN: "City center" },
-                        { text: "郊區", jyutping: "gaau1 keoi1", meaningZH: "城市周圍的地區。", meaningEN: "Suburbs" },
-                        { text: "春天", jyutping: "ceon1 tin1", meaningZH: "四季之首，氣候溫暖。", meaningEN: "Spring" },
-                        { text: "夏天", jyutping: "haa6 tin1", meaningZH: "四季中最熱的季節。", meaningEN: "Summer" },
-                        { text: "秋天", jyutping: "cau1 tin1", meaningZH: "四季中的第三季，氣候涼爽。", meaningEN: "Autumn" },
-                        { text: "冬天", jyutping: "dung1 tin1", meaningZH: "四季中最冷的季節。", meaningEN: "Winter" },
-                        { text: "東", jyutping: "dung1", meaningZH: "日出的方向。", meaningEN: "East" },
-                        { text: "南", jyutping: "naam4", meaningZH: "方向之一。", meaningEN: "South" },
-                        { text: "西", jyutping: "sai1", meaningZH: "日落的方向。", meaningEN: "West" },
-                        { text: "北", jyutping: "bak1", meaningZH: "方向之一。", meaningEN: "North" },
-                        { text: "銀行", jyutping: "ngan4 hong4", meaningZH: "辦理金融業務的機構。", meaningEN: "Bank" },
-                        { text: "圖書館", jyutping: "tou4 syu1 gun2", meaningZH: "收藏圖書供人閱讀的地方。", meaningEN: "Library" },
-                        { text: "博物館", jyutping: "bok3 mat6 gun2", meaningZH: "收藏和展出文物的場所。", meaningEN: "Museum" },
-                        { text: "醫院", jyutping: "ji1 jyun2", meaningZH: "治療病人的機構。", meaningEN: "Hospital" },
-                        { text: "長城", jyutping: "coeng4 sing4", meaningZH: "中國古代的軍事防禦工程。", meaningEN: "The Great Wall" },
-                        { text: "天安門廣場", jyutping: "tin1 on1 mun4 gwong2 coeng4", meaningZH: "位於北京的大型廣場。", meaningEN: "Tiananmen Square" }
+                        { text: "中國", jyutping: "zung1 gwok3", meaningZH: "位於東亞的國家。", meaningEN: "China" },
+                        { text: "英國", jyutping: "jing1 gwok3", meaningZH: "位於歐洲的國家。", meaningEN: "United Kingdom" },
+                        { text: "法國", jyutping: "faat3 gwok3", meaningZH: "位於歐洲的國家。", meaningEN: "France" },
+                        { text: "美國", jyutping: "mei5 gwok3", meaningZH: "位於北美的國家。", meaningEN: "United States" },
+                        { text: "國家", jyutping: "gwok3 gaa1", meaningZH: "擁有領土與主權的團體。", meaningEN: "Country" },
+                        { text: "國籍", jyutping: "gwok3 zik6", meaningZH: "個人所屬的國家。", meaningEN: "Nationality" },
+                        { text: "漢語", jyutping: "hon3 jyu5", meaningZH: "中文。", meaningEN: "Modern Standard Chinese/Mandarin" },
+                        { text: "普通話", jyutping: "pou2 tung1 waa2", meaningZH: "現代標準漢語。", meaningEN: "Mandarin" },
+                        { text: "法文", jyutping: "faat3 man4", meaningZH: "法國的語言。", meaningEN: "French language" },
+                        { text: "英語", jyutping: "jing1 jyu5", meaningZH: "英國的語言。", meaningEN: "English language" },
+                        { text: "外語", jyutping: "ngoi6 jyu5", meaningZH: "外國的語言。", meaningEN: "Foreign language" },
+                        { text: "語言", jyutping: "jyu5 jin4", meaningZH: "人類溝通的工具。", meaningEN: "Language" }
                     ] 
                 },
                 { 
                     id: 3, 
-                    title: "Topic Aera B (教育與工作)", 
+                    title: "數字與量詞", 
                     words: [
-                        { text: "學生", jyutping: "hok6 saang1", meaningZH: "在學校學習的人。", meaningEN: "Student" },
-                        { text: "小學", jyutping: "siu2 hok6", meaningZH: "初等教育學校。", meaningEN: "Primary school" },
-                        { text: "中學", jyutping: "zung1 hok6", meaningZH: "中等教育學校。", meaningEN: "Secondary school" },
-                        { text: "大學", jyutping: "dai6 hok6", meaningZH: "高等教育學府。", meaningEN: "University" },
-                        { text: "老師", jyutping: "lou5 si1", meaningZH: "傳授知識的人。", meaningEN: "Teacher" },
-                        { text: "校長", jyutping: "haau6 zoeng2", meaningZH: "學校的負責人。", meaningEN: "Principal" },
-                        { text: "同學", jyutping: "tung4 hok6", meaningZH: "在一起學習的人。", meaningEN: "Classmate" },
-                        { text: "工作", jyutping: "gung1 zok3", meaningZH: "職業或勞動。", meaningEN: "Job; Work" },
-                        { text: "兼職", jyutping: "gim1 zik1", meaningZH: "正職以外的工作。", meaningEN: "Part-time job" },
-                        { text: "工資", jyutping: "gung1 zi1", meaningZH: "工作的報酬。", meaningEN: "Salary; Wages" },
-                        { text: "公司", jyutping: "gung1 si1", meaningZH: "商業機構。", meaningEN: "Company" },
-                        { text: "將來", jyutping: "zoeng1 loi4", meaningZH: "未來。", meaningEN: "Future" },
-                        { text: "賺錢", jyutping: "zaan6 cin2", meaningZH: "獲取金錢。", meaningEN: "To earn money" }
+                        { text: "一", jyutping: "jat1", meaningZH: "數字 1。", meaningEN: "One" },
+                        { text: "二", jyutping: "ji6", meaningZH: "數字 2。", meaningEN: "Two" },
+                        { text: "三", jyutping: "saam1", meaningZH: "數字 3。", meaningEN: "Three" },
+                        { text: "四", jyutping: "sei3", meaningZH: "數字 4。", meaningEN: "Four" },
+                        { text: "五", jyutping: "ng5", meaningZH: "數字 5。", meaningEN: "Five" },
+                        { text: "六", jyutping: "luk6", meaningZH: "數字 6。", meaningEN: "Six" },
+                        { text: "七", jyutping: "cat1", meaningZH: "數字 7。", meaningEN: "Seven" },
+                        { text: "八", jyutping: "baat3", meaningZH: "數字 8。", meaningEN: "Eight" },
+                        { text: "九", jyutping: "gau2", meaningZH: "數字 9。", meaningEN: "Nine" },
+                        { text: "十", jyutping: "sap6", meaningZH: "數字 10。", meaningEN: "Ten" },
+                        { text: "兩", jyutping: "loeng5", meaningZH: "表示數量 2。", meaningEN: "Two (for quantity)" },
+                        { text: "百", jyutping: "baak3", meaningZH: "數字 100。", meaningEN: "Hundred" },
+                        { text: "千", jyutping: "cin1", meaningZH: "數字 1000。", meaningEN: "Thousand" },
+                        { text: "多少", jyutping: "do1 siu2", meaningZH: "詢問數量。", meaningEN: "Many, how many/much" },
+                        { text: "幾個", jyutping: "gei2 go3", meaningZH: "少數的數量。", meaningEN: "Several" },
+                        { text: "個", jyutping: "go3", meaningZH: "通用量詞。", meaningEN: "General measure word" },
+                        { text: "本", jyutping: "bun2", meaningZH: "書本的量詞。", meaningEN: "Measure word for books" },
+                        { text: "只/隻", jyutping: "zek3", meaningZH: "動物的量詞。", meaningEN: "Measure word for animals" },
+                        { text: "件", jyutping: "gin6", meaningZH: "衣物的量詞。", meaningEN: "Item (of clothing)" },
+                        { text: "張", jyutping: "zoeng1", meaningZH: "平面物體的量詞。", meaningEN: "Measure word for flat objects (table, paper)" },
+                        { text: "條", jyutping: "tiu4", meaningZH: "長條物體的量詞。", meaningEN: "Measure word for long objects (fish, trousers)" },
+                        { texy: "片", jyutping: "pin3", meaningZH: "從整體物件切下方塊狀物件的量詞", meaningEN: "Measure word for square slice (slice of bread)" }
                     ] 
                 },
                 { 
                     id: 4, 
-                    title: "Topic Aera C (家居與家庭)", 
+                    title: "顏色", 
                     words: [
-                        { text: "房子", jyutping: "fong4 zi2", meaningZH: "房屋。", meaningEN: "House" },
-                        { text: "樓", jyutping: "lau2", meaningZH: "樓房或樓層。", meaningEN: "Building; Floor" },
-                        { text: "廚房", jyutping: "cyu4 fong2", meaningZH: "煮食的地方。", meaningEN: "Kitchen" },
-                        { text: "飯廳", jyutping: "faan6 teng1", meaningZH: "吃飯的房間。", meaningEN: "Dining room" },
-                        { text: "臥室", jyutping: "ngo6 sat1", meaningZH: "睡覺的房間。", meaningEN: "Bedroom" },
-                        { text: "客廳", jyutping: "haak3 teng1", meaningZH: "接待客人的房間。", meaningEN: "Living room" },
-                        { text: "家", jyutping: "gaa1", meaningZH: "家庭或住所。", meaningEN: "Home; Family" },
-                        { text: "家人", jyutping: "gaa1 jan4", meaningZH: "家庭成員。", meaningEN: "Family members" },
-                        { text: "爺爺", jyutping: "je4 je2", meaningZH: "父親的父親。", meaningEN: "Grandfather (paternal)" },
-                        { text: "奶奶", jyutping: "naai4 naai2", meaningZH: "父親的母親。", meaningEN: "Grandmother (paternal)" },
-                        { text: "爸爸", jyutping: "baa1 baa1", meaningZH: "父親。", meaningEN: "Father" },
-                        { text: "媽媽", jyutping: "maa1 maa1", meaningZH: "母親。", meaningEN: "Mother" },
-                        { text: "哥哥", jyutping: "go1 go1", meaningZH: "兄長。", meaningEN: "Older brother" },
-                        { text: "姐姐", jyutping: "ze2 ze2", meaningZH: "長姊。", meaningEN: "Older sister" },
-                        { text: "狗", jyutping: "gau2", meaningZH: "常見的寵物。", meaningEN: "Dog" },
-                        { text: "貓", jyutping: "maau1", meaningZH: "常見的寵物。", meaningEN: "Cat" }
+                        { text: "顏色", jyutping: "ngaan4 sik1", meaningZH: "色彩。", meaningEN: "Colour" },
+                        { text: "白", jyutping: "baak6", meaningZH: "像雪的顏色。", meaningEN: "White" },
+                        { text: "黑", jyutping: "hak1", meaningZH: "像煤的顏色。", meaningEN: "Black" },
+                        { text: "紅", jyutping: "hung4", meaningZH: "像血的顏色。", meaningEN: "Red" },
+                        { text: "黃", jyutping: "wong4", meaningZH: "像金的顏色。", meaningEN: "Yellow" },
+                        { text: "藍", jyutping: "laam4", meaningZH: "像天空的顏色。", meaningEN: "Blue" },
+                        { text: "綠", jyutping: "luk6", meaningZH: "像草的顏色。", meaningEN: "Green" },
+                        { text: "金", jyutping: "gam1", meaningZH: "黃金的顏色。", meaningEN: "Gold" },
+                        { text: "銀", jyutping: "ngan4", meaningZH: "白銀的顏色。", meaningEN: "Silver" }
                     ] 
                 },
                 { 
                     id: 5, 
-                    title: "Topic Aera D (飲食與環境)", 
+                    title: "時間與日期", 
                     words: [
-                        { text: "米飯", jyutping: "mai5 faan6", meaningZH: "煮熟的稻米。", meaningEN: "Cooked rice" },
-                        { text: "早飯", jyutping: "zou2 faan6", meaningZH: "早餐。", meaningEN: "Breakfast" },
-                        { text: "午飯", jyutping: "ng5 faan6", meaningZH: "午餐。", meaningEN: "Lunch" },
-                        { text: "晚飯", jyutping: "maan5 faan6", meaningZH: "晚餐。", meaningEN: "Dinner" },
-                        { text: "麵包", jyutping: "min6 baau1", meaningZH: "麵粉製品。", meaningEN: "Bread" },
-                        { text: "麵條", jyutping: "min6 tiu4", meaningZH: "細長的麵食。", meaningEN: "Noodles" },
-                        { text: "魚", jyutping: "jyu2", meaningZH: "水生動物，可食用。", meaningEN: "Fish" },
-                        { text: "雞", jyutping: "gai1", meaningZH: "家禽。", meaningEN: "Chicken" },
-                        { text: "國際", jyutping: "gwok3 zai3", meaningZH: "國家之間的。", meaningEN: "International" },
-                        { text: "國內", jyutping: "gwok3 noi6", meaningZH: "本國範圍內的。", meaningEN: "Domestic" },
-                        { text: "世界", jyutping: "sai3 gaai3", meaningZH: "地球上所有地方。", meaningEN: "World" },
-                        { text: "山", jyutping: "saan1", meaningZH: "高聳的地面。", meaningEN: "Mountain" },
-                        { text: "河", jyutping: "ho4", meaningZH: "流動的水道。", meaningEN: "River" },
-                        { text: "湖", jyutping: "wu4", meaningZH: "陸地上的大水域。", meaningEN: "Lake" },
-                        { text: "海", jyutping: "hoi2", meaningZH: "廣大的鹹水域。", meaningEN: "Sea" },
-                        { text: "新聞", jyutping: "san1 man4", meaningZH: "報導的消息。", meaningEN: "News" },
-                        { text: "報紙", jyutping: "bou3 zi2", meaningZH: "印有新聞的紙張。", meaningEN: "Newspaper" }
+                        { text: "現在", jyutping: "jin6 zoi6", meaningZH: "目前時刻。", meaningEN: "Now" },
+                        { text: "點", jyutping: "dim2", meaningZH: "時間單位(時)。", meaningEN: "O'clock" },
+                        { text: "半", jyutping: "bun3", meaningZH: "30分鐘。", meaningEN: "Half" },
+                        { text: "時間", jyutping: "si4 gaan3", meaningZH: "光陰。", meaningEN: "Time" },
+                        { text: "昨天", jyutping: "zok6 tin1", meaningZH: "前一日。", meaningEN: "Yesterday" },
+                        { text: "今天", jyutping: "gam1 tin1", meaningZH: "這一日。", meaningEN: "Today" },
+                        { text: "明天", jyutping: "ming4 tin1", meaningZH: "下一日。", meaningEN: "Tomorrow" },
+                        { text: "每天", jyutping: "mui5 tin1", meaningZH: "每一日。", meaningEN: "Every day" },
+                        { text: "去年", jyutping: "heoi3 nin4", meaningZH: "上一年。", meaningEN: "Last year" },
+                        { text: "今年", jyutping: "gam1 nin4", meaningZH: "這一年。", meaningEN: "This year" },
+                        { text: "明年", jyutping: "ming4 nin4", meaningZH: "下一年。", meaningEN: "Next year" },
+                        { text: "早上", jyutping: "zou2 soeng6", meaningZH: "清晨。", meaningEN: "Morning" },
+                        { text: "上午", jyutping: "soeng6 ng5", meaningZH: "中午之前。", meaningEN: "Morning, forenoon" },
+                        { text: "中午", jyutping: "zung1 ng5", meaningZH: "正午十二點左右。", meaningEN: "Midday" },
+                        { text: "下午", jyutping: "haa6 ng5", meaningZH: "中午之後。", meaningEN: "Afternoon" },
+                        { text: "晚上", jyutping: "maan5 soeng6", meaningZH: "日落之後。", meaningEN: "Evening" },
+                        { text: "星期", jyutping: "sing1 kei4", meaningZH: "週。", meaningEN: "Week" },
+                        { text: "週末", jyutping: "zau1 mut6", meaningZH: "星期六和星期日。", meaningEN: "Weekend" },
+                        { text: "將來", jyutping: "zoeng1 loi4", meaningZH: "未來。", meaningEN: "Future" },
+                        { text: "以前", jyutping: "ji5 cin4", meaningZH: "過去。", meaningEN: "Before" },
+                        { text: "以後", jyutping: "ji5 hau6", meaningZH: "未來。", meaningEN: "After" },
+                        { text: "時候", jyutping: "si4 hau6", meaningZH: "某一段時間。", meaningEN: "When, at the time of" },
+                        { text: "總是", jyutping: "zung2 si6", meaningZH: "一直是。", meaningEN: "Always" },
+                        { text: "常常", jyutping: "soeng4 soeng4", meaningZH: "經常。", meaningEN: "Often" },
+                        { text: "已經", jyutping: "ji5 ging1", meaningZH: "表示動作完成。", meaningEN: "Already" },
+                        { text: "馬上", jyutping: "maa5 soeng6", meaningZH: "立刻。", meaningEN: "Immediately" }
                     ] 
                 },
                 { 
                     id: 6, 
-                    title: "Topic Aera E (科技與健康)", 
+                    title: "動詞 (Verbs)", 
                     words: [
-                        { text: "電話", jyutping: "din6 waa2", meaningZH: "通訊工具。", meaningEN: "Telephone" },
-                        { text: "手機", jyutping: "sau2 gei1", meaningZH: "移動電話。", meaningEN: "Mobile phone" },
-                        { text: "電腦", jyutping: "din6 nou5", meaningZH: "電子運算裝置。", meaningEN: "Computer" },
-                        { text: "電子郵件", jyutping: "din6 zi2 jau4 gin6", meaningZH: "E-mail。", meaningEN: "Email" },
-                        { text: "上網", jyutping: "soeng5 mong5", meaningZH: "連接互聯網。", meaningEN: "Go online; Surf the net" },
-                        { text: "網站", jyutping: "mong5 zaam6", meaningZH: "網頁集合。", meaningEN: "Website" },
-                        { text: "生日", jyutping: "saang1 jat6", meaningZH: "出生的日子。", meaningEN: "Birthday" },
-                        { text: "祝", jyutping: "zuk1", meaningZH: "表示良好的願望。", meaningEN: "To wish" },
-                        { text: "新年好", jyutping: "san1 nin4 hou2", meaningZH: "新年問候語。", meaningEN: "Happy New Year" },
-                        { text: "愛好", jyutping: "oi3 hou3", meaningZH: "喜好的活動。", meaningEN: "Hobby" },
-                        { text: "興趣", jyutping: "hing3 ceoi3", meaningZH: "喜愛的情緒。", meaningEN: "Interest" },
+                        { text: "是", jyutping: "si6", meaningZH: "表示存在或屬性。", meaningEN: "To be" },
+                        { text: "有", jyutping: "jau5", meaningZH: "擁有。", meaningEN: "To have" },
+                        { text: "在", jyutping: "zoi6", meaningZH: "表示位置。", meaningEN: "To be in/at/on" },
+                        { text: "叫", jyutping: "giu3", meaningZH: "稱呼。", meaningEN: "To be called" },
+                        { text: "說", jyutping: "syut3", meaningZH: "講話。", meaningEN: "To speak" },
+                        { text: "吃", jyutping: "hek3", meaningZH: "進食。", meaningEN: "To eat" },
+                        { text: "喝", jyutping: "hot3", meaningZH: "飲用。", meaningEN: "To drink" },
+                        { text: "學習", jyutping: "hok6 zaap6", meaningZH: "獲取知識。", meaningEN: "To study/learn" },
+                        { text: "做", jyutping: "zou6", meaningZH: "從事。", meaningEN: "To do" },
+                        { text: "看", jyutping: "hon3", meaningZH: "觀看、閱讀。", meaningEN: "To see/read/watch" },
+                        { text: "去", jyutping: "heoi3", meaningZH: "前往。", meaningEN: "To go" },
                         { text: "買", jyutping: "maai5", meaningZH: "購入。", meaningEN: "To buy" },
                         { text: "賣", jyutping: "maai6", meaningZH: "售出。", meaningEN: "To sell" },
-                        { text: "身體", jyutping: "san1 tai2", meaningZH: "身軀。", meaningEN: "Body" },
-                        { text: "病", jyutping: "beng6", meaningZH: "疾病。", meaningEN: "Illness; Sick" },
-                        { text: "發燒", jyutping: "faat3 siu1", meaningZH: "體溫過高。", meaningEN: "Fever" },
-                        { text: "感冒", jyutping: "gam2 mo6", meaningZH: "上呼吸道感染。", meaningEN: "Cold; Flu" }
+                        { text: "穿", jyutping: "cyun1", meaningZH: "穿戴衣物。", meaningEN: "To wear" },
+                        { text: "給", jyutping: "kap1", meaningZH: "交付。", meaningEN: "To give" },
+                        { text: "找", jyutping: "zaau2", meaningZH: "尋覓。", meaningEN: "To find/look for" },
+                        { text: "睡覺", jyutping: "seoi6 gaau3", meaningZH: "休息入眠。", meaningEN: "To sleep" },
+                        { text: "知道", jyutping: "zi1 dou3", meaningZH: "曉得。", meaningEN: "To know" },
+                        { text: "覺得", jyutping: "gok3 dak1", meaningZH: "認為、感到。", meaningEN: "To think/feel" },
+                        { text: "喜歡", jyutping: "hei2 fun1", meaningZH: "喜愛。", meaningEN: "To like" },
+                        { text: "愛", jyutping: "oi3", meaningZH: "熱愛。", meaningEN: "To love" },
+                        { text: "希望", jyutping: "hei1 mong6", meaningZH: "盼望。", meaningEN: "To hope" },
+                        { text: "可以", jyutping: "ho2 ji5", meaningZH: "能夠、許可。", meaningEN: "Can/May" },
+                        { text: "會", jyutping: "wui5", meaningZH: "懂得、將要。", meaningEN: "Can/Will" }
+                    ] 
+                },
+                { 
+                    id: 7, 
+                    title: "形容詞 (Adjectives)", 
+                    words: [
+                        { text: "大", jyutping: "daai6", meaningZH: "體積廣闊。", meaningEN: "Big" },
+                        { text: "小", jyutping: "siu2", meaningZH: "體積微細。", meaningEN: "Small" },
+                        { text: "多", jyutping: "do1", meaningZH: "數量大。", meaningEN: "Many/Much" },
+                        { text: "少", jyutping: "siu2", meaningZH: "數量小。", meaningEN: "Few/Little" },
+                        { text: "好", jyutping: "hou2", meaningZH: "良善。", meaningEN: "Good" },
+                        { text: "壞", jyutping: "waai6", meaningZH: "不好。", meaningEN: "Bad" },
+                        { text: "早", jyutping: "zou2", meaningZH: "時間在前。", meaningEN: "Early" },
+                        { text: "晚", jyutping: "maan5", meaningZH: "時間在後。", meaningEN: "Late" },
+                        { text: "新", jyutping: "san1", meaningZH: "剛出現的。", meaningEN: "New" },
+                        { text: "舊", jyutping: "gau6", meaningZH: "過去的、使用過的。", meaningEN: "Old" },
+                        { text: "忙", jyutping: "mong4", meaningZH: "事情多。", meaningEN: "Busy" },
+                        { text: "累", jyutping: "leoi6", meaningZH: "疲倦。", meaningEN: "Tired" },
+                        { text: "快", jyutping: "faai3", meaningZH: "速度高。", meaningEN: "Fast" },
+                        { text: "慢", jyutping: "maan6", meaningZH: "速度低。", meaningEN: "Slow" },
+                        { text: "熱", jyutping: "jit6", meaningZH: "溫度高。", meaningEN: "Hot" },
+                        { text: "冷", jyutping: "laang5", meaningZH: "溫度低。", meaningEN: "Cold" },
+                        { text: "高", jyutping: "gou1", meaningZH: "上下距離大。", meaningEN: "Tall/High" },
+                        { text: "高興", jyutping: "gou1 hing3", meaningZH: "愉快。", meaningEN: "Happy" },
+                        { text: "漂亮", jyutping: "piu3 loeng6", meaningZH: "美麗。", meaningEN: "Beautiful" },
+                        { text: "可愛", jyutping: "ho2 oi3", meaningZH: "令人喜愛。", meaningEN: "Cute" },
+                        { text: "有趣", jyutping: "jau5 ceoi3", meaningZH: "有意思。", meaningEN: "Interesting" },
+                        { text: "重要", jyutping: "zung6 jiu3", meaningZH: "具重大影響。", meaningEN: "Important" }
+                    ] 
+                },
+                { 
+                    id: 8, 
+                    title: "副詞與疑問詞", 
+                    words: [
+                        { text: "不", jyutping: "bat1", meaningZH: "否定。", meaningEN: "Not" },
+                        { text: "沒", jyutping: "mut6", meaningZH: "無。", meaningEN: "Not (have)" },
+                        { text: "很", jyutping: "han2", meaningZH: "非常。", meaningEN: "Very" },
+                        { text: "也", jyutping: "jaa5", meaningZH: "同樣。", meaningEN: "Also/Too" },
+                        { text: "都", jyutping: "dou1", meaningZH: "全部。", meaningEN: "All/Both" },
+                        { text: "再", jyutping: "zoi3", meaningZH: "重複。", meaningEN: "Again" },
+                        { text: "更", jyutping: "gang3", meaningZH: "愈加。", meaningEN: "Even more" },
+                        { text: "當然", jyutping: "dong1 jin4", meaningZH: "理所當然。", meaningEN: "Certainly/Of course" },
+                        { text: "什麼", jyutping: "sam6 mo1", meaningZH: "詢問事物。", meaningEN: "What" },
+                        { text: "誰", jyutping: "seoi4", meaningZH: "詢問人物。", meaningEN: "Who" },
+                        { text: "哪", jyutping: "naa5", meaningZH: "詢問選擇。", meaningEN: "Which" },
+                        { text: "哪兒", jyutping: "naa5 ji4", meaningZH: "詢問地點。", meaningEN: "Where" },
+                        { text: "為什麼", jyutping: "wai6 sam6 mo1", meaningZH: "詢問原因。", meaningEN: "Why" },
+                        { text: "幾", jyutping: "gei2", meaningZH: "詢問數量(少)。", meaningEN: "How many" },
+                        { text: "怎麼", jyutping: "zam2 mo1", meaningZH: "詢問方式。", meaningEN: "How" }
+                    ] 
+                },
+                { 
+                    id: 9, 
+                    title: "位置與連接詞", 
+                    words: [
+                        { text: "這裡", jyutping: "ze2 leoi5", meaningZH: "此處。", meaningEN: "Here" },
+                        { text: "那裡", jyutping: "naa5 leoi5", meaningZH: "彼處。", meaningEN: "There" },
+                        { text: "左", jyutping: "zo2", meaningZH: "左邊。", meaningEN: "Left" },
+                        { text: "右", jyutping: "jau6", meaningZH: "右邊。", meaningEN: "Right" },
+                        { text: "前", jyutping: "cin4", meaningZH: "前方。", meaningEN: "In front" },
+                        { text: "後", jyutping: "hau6", meaningZH: "後方。", meaningEN: "Behind" },
+                        { text: "和", jyutping: "wo4", meaningZH: "與。", meaningEN: "And" },
+                        { text: "因為", jyutping: "jan1 wai6", meaningZH: "表示原因。", meaningEN: "Because" },
+                        { text: "所以", jyutping: "so2 ji5", meaningZH: "表示結果。", meaningEN: "So/Therefore" },
+                        { text: "雖然", jyutping: "seoi1 jin4", meaningZH: "表示讓步。", meaningEN: "Although" },
+                        { text: "可是", jyutping: "ho2 si6", meaningZH: "表示轉折。", meaningEN: "But/However" }
+                    ] 
+                },
+                { 
+                    id: 10, 
+                    title: "社交與其他", 
+                    words: [
+                        { text: "你好", jyutping: "nei5 hou2", meaningZH: "見面問候。", meaningEN: "Hello" },
+                        { text: "再見", jyutping: "zoi3 gin3", meaningZH: "告別。", meaningEN: "Goodbye" },
+                        { text: "謝謝", jyutping: "ze6 ze6", meaningZH: "表示感激。", meaningEN: "Thank you" },
+                        { text: "對不起", jyutping: "deoi3 bat1 hei2", meaningZH: "道歉。", meaningEN: "Sorry" },
+                        { text: "沒關係", jyutping: "mut6 gwaan1 hai6", meaningZH: "不介意。", meaningEN: "It's okay" },
+                        { text: "先生", jyutping: "sin1 saang1", meaningZH: "對男士的尊稱。", meaningEN: "Mr." },
+                        { text: "小姐", jyutping: "siu2 ze2", meaningZH: "對女士的尊稱。", meaningEN: "Miss" },
+                        { text: "東西", jyutping: "dung1 sai1", meaningZH: "物品。", meaningEN: "Thing" },
+                        { text: "非常", jyutping: "fei1 soeng4", meaningZH: "十分。", meaningEN: "Extremely" }
                     ] 
                 }
+            ] 
+        },
+        6: {
+            title: "IGCSE - Topic Area A",
+            lessons: [
+                { id: 1, title: "常見用詞", words: [
+                    { text: "地方", jyutping: "dei6 fong1", meaningZH: "地點。", meaningEN: "Place" },
+                    { text: "城市", jyutping: "sing4 si5", meaningZH: "City。", meaningEN: "City" },
+                    { text: "市中心", jyutping: "si5 zung1 sam1", meaningZH: "城市的中心。", meaningEN: "City center" },
+                    { text: "郊區", jyutping: "gaau1 keoi1", meaningZH: "城市外圍。", meaningEN: "Suburbs" },
+                    { text: "國家", jyutping: "gwok3 gaa1", meaningZH: "Country。", meaningEN: "Country" },
+                    { text: "地圖", jyutping: "dei6 tou4", meaningZH: "Map。", meaningEN: "Map" }
+                ]},
+                { id: 2, title: "居住地", words: [
+                    { text: "倫敦", jyutping: "leon4 deon1", meaningZH: "英國首都。", meaningEN: "London" },
+                    { text: "北京", jyutping: "bak1 ging1", meaningZH: "中國首都。", meaningEN: "Beijing" },
+                    { text: "廣州", jyutping: "gwong2 zau1", meaningZH: "中國城市。", meaningEN: "Guangzhou" },
+                    { text: "上海", jyutping: "soeng6 hoi2", meaningZH: "中國城市。", meaningEN: "Shanghai" },
+                    { text: "香港", jyutping: "hoeng1 gong2", meaningZH: "中國特區。", meaningEN: "Hong Kong" },
+                    { text: "臺灣", jyutping: "toi4 waan1", meaningZH: "Taiwan。", meaningEN: "Taiwan" }
+                ]},
+                { id: 3, title: "天氣與季節", words: [
+                    { text: "春天", jyutping: "ceon1 tin1", meaningZH: "Spring。", meaningEN: "Spring" },
+                    { text: "夏天", jyutping: "haa6 tin1", meaningZH: "Summer。", meaningEN: "Summer" },
+                    { text: "秋天", jyutping: "cau1 tin1", meaningZH: "Autumn。", meaningEN: "Autumn" },
+                    { text: "冬天", jyutping: "dung1 tin1", meaningZH: "Winter。", meaningEN: "Winter" },
+                    { text: "熱", jyutping: "jit6", meaningZH: "Hot。", meaningEN: "Hot" },
+                    { text: "冷", jyutping: "laang5", meaningZH: "Cold。", meaningEN: "Cold" },
+                    { text: "晴天", jyutping: "cing4 tin1", meaningZH: "Sunny。", meaningEN: "Sunny" },
+                    { text: "雨", jyutping: "jyu5", meaningZH: "Rain。", meaningEN: "Rain" },
+                    { text: "雪", jyutping: "syut3", meaningZH: "Snow。", meaningEN: "Snow" }
+                ]},
+                { id: 4, title: "交通工具與方位", words: [
+                    { text: "東", jyutping: "dung1", meaningZH: "East。", meaningEN: "East" },
+                    { text: "南", jyutping: "naam4", meaningZH: "South。", meaningEN: "South" },
+                    { text: "西", jyutping: "sai1", meaningZH: "West。", meaningEN: "West" },
+                    { text: "北", jyutping: "bak1", meaningZH: "North。", meaningEN: "North" },
+                    { text: "火車", jyutping: "fo2 ce1", meaningZH: "Train。", meaningEN: "Train" },
+                    { text: "汽車", jyutping: "hei3 ce1", meaningZH: "Car。", meaningEN: "Car" },
+                    { text: "公共汽車", jyutping: "gung1 gung6 hei3 ce1", meaningZH: "Bus。", meaningEN: "Bus" },
+                    { text: "飛機", jyutping: "fei1 gei1", meaningZH: "Airplane。", meaningEN: "Airplane" },
+                    { text: "船", jyutping: "syun4", meaningZH: "Boat/Ship。", meaningEN: "Boat" },
+                    { text: "地鐵", jyutping: "dei6 tit3", meaningZH: "Subway/MTR。", meaningEN: "Subway" }
+                ]},
+                { id: 5, title: "假期與旅遊資訊", words: [
+                    { text: "放假", jyutping: "fong3 gaa3", meaningZH: "Holiday start。", meaningEN: "Have a holiday" },
+                    { text: "假期", jyutping: "gaa3 kei4", meaningZH: "Holiday。", meaningEN: "Holiday" },
+                    { text: "旅遊", jyutping: "leoi5 jau4", meaningZH: "Travel。", meaningEN: "Travel" },
+                    { text: "護照", jyutping: "wu6 ziu3", meaningZH: "Passport。", meaningEN: "Passport" },
+                    { text: "行李", jyutping: "hang4 lei5", meaningZH: "Luggage。", meaningEN: "Luggage" },
+                    { text: "票", jyutping: "piu3", meaningZH: "Ticket。", meaningEN: "Ticket" },
+                    { text: "酒店", jyutping: "zau2 dim3", meaningZH: "Hotel。", meaningEN: "Hotel" }
+                ]},
+                { id: 6, title: "服務", words: [
+                    { text: "銀行", jyutping: "ngan4 hong4", meaningZH: "Bank。", meaningEN: "Bank" },
+                    { text: "圖書館", jyutping: "tou4 syu1 gun2", meaningZH: "Library。", meaningEN: "Library" },
+                    { text: "博物館", jyutping: "bok3 mat6 gun2", meaningZH: "Museum。", meaningEN: "Museum" },
+                    { text: "郵局", jyutping: "jau4 guk2", meaningZH: "Post office。", meaningEN: "Post office" },
+                    { text: "警察局", jyutping: "ging2 caat3 guk2", meaningZH: "Police station。", meaningEN: "Police station" },
+                    { text: "醫院", jyutping: "ji1 jyun2", meaningZH: "Hospital。", meaningEN: "Hospital" }
+                ]}
             ]
+        },
+7: {
+            title: "IGCSE - Topic B (Education and employment)",
+            lessons: [
+                { 
+                    id: 1, 
+                    title: "School life and routine (學校生活與日常)", 
+                    words: [
+                        { text: "學生", jyutping: "hok6 saang1", meaningZH: "在學的人。", meaningEN: "Student" },
+                        { text: "小學", jyutping: "siu2 hok6", meaningZH: "初等教育。", meaningEN: "Primary school" },
+                        { text: "中學", jyutping: "zung1 hok6", meaningZH: "中等教育。", meaningEN: "Secondary school" },
+                        { text: "大學", jyutping: "daai6 hok6", meaningZH: "高等教育。", meaningEN: "University" },
+                        { text: "同學", jyutping: "tung4 hok6", meaningZH: "一起學習的人。", meaningEN: "Classmate" },
+                        { text: "學校", jyutping: "hok6 haau6", meaningZH: "學習的地方。", meaningEN: "School" },
+                        { text: "學期", jyutping: "hok6 kei4", meaningZH: "學年的一段時間。", meaningEN: "School term" },
+                        { text: "科學", jyutping: "fo1 hok6", meaningZH: "自然科學。", meaningEN: "Science" },
+                        { text: "科目", jyutping: "fo1 muk6", meaningZH: "學科。", meaningEN: "Subject" },
+                        { text: "老師", jyutping: "lou5 si1", meaningZH: "教書的人。", meaningEN: "Teacher" },
+                        { text: "生物", jyutping: "sang1 mat6", meaningZH: "生命科學。", meaningEN: "Biology" },
+                        { text: "休息", jyutping: "jau1 sik1", meaningZH: "暫停活動。", meaningEN: "Rest, break" },
+                        { text: "慶祝", jyutping: "hing3 zuk1", meaningZH: "祝賀。", meaningEN: "Celebrate" },
+                        { text: "成功", jyutping: "sing4 gung1", meaningZH: "達成目標。", meaningEN: "Success" },
+                        { text: "化學", jyutping: "faa3 hok6", meaningZH: "物質科學。", meaningEN: "Chemistry" },
+                        { text: "文章", jyutping: "man4 zoeng1", meaningZH: "文字作品。", meaningEN: "Article, essay" },
+                        { text: "畢業", jyutping: "bat1 jip6", meaningZH: "完成學業。", meaningEN: "Graduation" },
+                        { text: "分數", jyutping: "fan1 sou3", meaningZH: "成績。", meaningEN: "Mark, grade" },
+                        { text: "物理", jyutping: "mat6 lei5", meaningZH: "物理學。", meaningEN: "Physics" },
+                        { text: "交換", jyutping: "gaau1 wun6", meaningZH: "互換。", meaningEN: "Exchange" },
+                        { text: "活動", jyutping: "wut6 dung6", meaningZH: "事情。", meaningEN: "Activity" },
+                        { text: "留學生", jyutping: "lau4 hok6 saang1", meaningZH: "在國外學習的學生。", meaningEN: "Foreign student" },
+                        { text: "時間表", jyutping: "si4 gaan3 biu2", meaningZH: "日程表。", meaningEN: "Timetable" },
+                        { text: "集中", jyutping: "zaap6 zung1", meaningZH: "專注。", meaningEN: "To concentrate" },
+                        { text: "暑假", jyutping: "syu2 gaa3", meaningZH: "夏季假期。", meaningEN: "Summer holiday" },
+                        { text: "打算", jyutping: "daa2 syun3", meaningZH: "計劃。", meaningEN: "To plan" },
+                        { text: "類型", jyutping: "leoi6 jing4", meaningZH: "種類。", meaningEN: "Type" },
+                        { text: "高考", jyutping: "gou1 haau2", meaningZH: "大學入學試。", meaningEN: "College entrance examination" },
+                        { text: "會考", jyutping: "wui6 haau2", meaningZH: "公開考試。", meaningEN: "Public examination" },
+                        { text: "計劃", jyutping: "gai3 waak6", meaningZH: "方案。", meaningEN: "Plan" },
+                        { text: "書", jyutping: "syu1", meaningZH: "書籍。", meaningEN: "Book" },
+                        { text: "教室", jyutping: "gaau3 sat1", meaningZH: "課室。", meaningEN: "Classroom" },
+                        { text: "字典", jyutping: "zi6 din2", meaningZH: "查字的書。", meaningEN: "Dictionary" },
+                        { text: "考試", jyutping: "haau2 si5", meaningZH: "測驗。", meaningEN: "Examination" },
+                        { text: "外語", jyutping: "ngoi6 jyu5", meaningZH: "外國語言。", meaningEN: "Foreign language" },
+                        { text: "地理", jyutping: "dei6 lei5", meaningZH: "地質學。", meaningEN: "Geography" },
+                        { text: "上學", jyutping: "soeng5 hok6", meaningZH: "去學校。", meaningEN: "Go to school" },
+                        { text: "上課", jyutping: "soeng5 fo3", meaningZH: "開始課堂。", meaningEN: "Have a lesson" },
+                        { text: "校長", jyutping: "haau6 zoeng2", meaningZH: "學校負責人。", meaningEN: "Head teacher" },
+                        { text: "歷史", jyutping: "lik6 si2", meaningZH: "過往事蹟。", meaningEN: "History" },
+                        { text: "作業", jyutping: "zok3 jip6", meaningZH: "功課。", meaningEN: "Homework" },
+                        { text: "數學", jyutping: "sou3 hok6", meaningZH: "算術。", meaningEN: "Maths" },
+                        { text: "音樂", jyutping: "jam1 ngok6", meaningZH: "樂韻。", meaningEN: "Music" },
+                        { text: "筆", jyutping: "bat1", meaningZH: "寫字工具。", meaningEN: "Pen" },
+                        { text: "壓力", jyutping: "aat3 lik6", meaningZH: "負擔。", meaningEN: "Pressure" },
+                        { text: "成績", jyutping: "sing4 zik1", meaningZH: "結果。", meaningEN: "Result, achievement" },
+                        { text: "規則", jyutping: "gwai1 zak1", meaningZH: "規定。", meaningEN: "Rule" },
+                        { text: "校服", jyutping: "haau6 fuk6", meaningZH: "學校制服。", meaningEN: "School uniform" },
+                        { text: "起床", jyutping: "hei2 cong4", meaningZH: "睡醒。", meaningEN: "Get up" },
+                        { text: "睡覺", jyutping: "seoi6 gaau3", meaningZH: "入睡。", meaningEN: "Sleep" },
+                        { text: "課本", jyutping: "fo3 bun2", meaningZH: "教科書。", meaningEN: "Textbook" },
+                        { text: "體育", jyutping: "tai2 juk6", meaningZH: "體能活動。", meaningEN: "PE" },
+                        { text: "美術", jyutping: "mei5 seot6", meaningZH: "藝術。", meaningEN: "Art" },
+                        { text: "禮堂", jyutping: "lai5 tong4", meaningZH: "大廳。", meaningEN: "Assembly hall" },
+                        { text: "運動場", jyutping: "wan6 dung6 coeng4", meaningZH: "運動場地。", meaningEN: "Playground/Sports ground" }
+                    ]
+                },
+                { 
+                    id: 2, 
+                    title: "Work and career (工作與職業)", 
+                    words: [
+                        { text: "工作", jyutping: "gung1 zok3", meaningZH: "職業。", meaningEN: "Job, work" },
+                        { text: "兼職", jyutping: "gim1 zik1", meaningZH: "非全職。", meaningEN: "Part-time" },
+                        { text: "工資", jyutping: "gung1 zi1", meaningZH: "薪水。", meaningEN: "Salary" },
+                        { text: "廚師", jyutping: "cyu4 si1", meaningZH: "煮食的人。", meaningEN: "Cook, chef" },
+                        { text: "司機", jyutping: "si1 gei1", meaningZH: "開車的人。", meaningEN: "Driver" },
+                        { text: "記者", jyutping: "gei3 ze2", meaningZH: "採訪新聞的人。", meaningEN: "Journalist" },
+                        { text: "演員", jyutping: "jin2 jyun4", meaningZH: "演戲的人。", meaningEN: "Actor/Actress" },
+                        { text: "歌星", jyutping: "go1 sing1", meaningZH: "歌手。", meaningEN: "Singer" },
+                        { text: "經理", jyutping: "ging1 lei5", meaningZH: "管理人員。", meaningEN: "Manager" },
+                        { text: "科學家", jyutping: "fo1 hok6 gaa1", meaningZH: "研究科學的人。", meaningEN: "Scientist" },
+                        { text: "工程師", jyutping: "gung1 cing4 si1", meaningZH: "技術人員。", meaningEN: "Engineer" },
+                        { text: "作家", jyutping: "zok3 gaa1", meaningZH: "寫作的人。", meaningEN: "Writer, author" },
+                        { text: "商人", jyutping: "soeng1 jan4", meaningZH: "做生意的人。", meaningEN: "Businessman" },
+                        { text: "工人", jyutping: "gung1 jan4", meaningZH: "勞動者。", meaningEN: "Worker" },
+                        { text: "做生意", jyutping: "zou6 saang1 ji3", meaningZH: "經商。", meaningEN: "Do business/trade" },
+                        { text: "醫生", jyutping: "ji1 sang1", meaningZH: "治病的人。", meaningEN: "Doctor" },
+                        { text: "護士", jyutping: "wu6 si6", meaningZH: "照顧病人的人。", meaningEN: "Nurse" },
+                        { text: "訪問", jyutping: "fong2 man6", meaningZH: "採訪。", meaningEN: "Interview" },
+                        { text: "上班", jyutping: "soeng5 baan1", meaningZH: "開始工作。", meaningEN: "Go to work" },
+                        { text: "下班", jyutping: "haa6 baan1", meaningZH: "結束工作。", meaningEN: "Finish work" },
+                        { text: "申請", jyutping: "san1 cing2", meaningZH: "請求。", meaningEN: "Apply, application" },
+                        { text: "訓練", jyutping: "fan3 lin6", meaningZH: "培訓。", meaningEN: "Training" },
+                        { text: "全職", jyutping: "cyun4 zik1", meaningZH: "全日制。", meaningEN: "Full time" },
+                        { text: "義工", jyutping: "ji6 gung1", meaningZH: "志願者。", meaningEN: "Volunteer" },
+                        { text: "將來", jyutping: "zoeng1 loi4", meaningZH: "未來。", meaningEN: "Future" },
+                        { text: "賺錢", jyutping: "zaan6 cin2", meaningZH: "獲取金錢。", meaningEN: "Earn money" },
+                        { text: "公司", jyutping: "gung1 si1", meaningZH: "商業機構。", meaningEN: "Company" },
+                        { text: "零用錢", jyutping: "ling4 jung6 cin2", meaningZH: "零花錢。", meaningEN: "Pocket money" }
+                    ]
+                }
+            ]
+        },
+        8: {
+            title: "IGCSE - Topic Area C",
+            lessons: [
+                { id: 1, title: "房屋類別及家私", words: [
+                    { text: "房子", jyutping: "fong4 zi2", meaningZH: "House。", meaningEN: "House" },
+                    { text: "樓", jyutping: "lau2", meaningZH: "Building/Floor。", meaningEN: "Building" },
+                    { text: "家", jyutping: "gaa1", meaningZH: "Home。", meaningEN: "Home" },
+                    { text: "房間", jyutping: "fong4 gaan1", meaningZH: "Room。", meaningEN: "Room" },
+                    { text: "廚房", jyutping: "cyu4 fong2", meaningZH: "Kitchen。", meaningEN: "Kitchen" },
+                    { text: "飯廳", jyutping: "faan6 teng1", meaningZH: "Dining room。", meaningEN: "Dining room" },
+                    { text: "臥室", jyutping: "ngo6 sat1", meaningZH: "Bedroom。", meaningEN: "Bedroom" },
+                    { text: "客廳", jyutping: "haak3 teng1", meaningZH: "Living room。", meaningEN: "Living room" },
+                    { text: "廁所", jyutping: "ci3 so2", meaningZH: "Toilet。", meaningEN: "Toilet" },
+                    { text: "桌子", jyutping: "zoek3 zi2", meaningZH: "Table。", meaningEN: "Table" },
+                    { text: "椅子", jyutping: "ji2 zi2", meaningZH: "Chair。", meaningEN: "Chair" },
+                    { text: "沙發", jyutping: "saa1 faat3", meaningZH: "Sofa。", meaningEN: "Sofa" },
+                    { text: "冰箱", jyutping: "bing1 soeng1", meaningZH: "Fridge。", meaningEN: "Refrigerator" },
+                    { text: "衣櫃", jyutping: "ji1 gwai6", meaningZH: "Wardrobe。", meaningEN: "Wardrobe" },
+                    { text: "花園", jyutping: "faa1 jyun4", meaningZH: "Garden。", meaningEN: "Garden" }
+                ]},
+                { id: 2, title: "個人、家庭及朋友", words: [
+                    { text: "家人", jyutping: "gaa1 jan4", meaningZH: "Family members。", meaningEN: "Family" },
+                    { text: "爺爺", jyutping: "je4 je2", meaningZH: "Grandpa (paternal)。", meaningEN: "Grandfather" },
+                    { text: "奶奶", jyutping: "naai4 naai2", meaningZH: "Grandma (paternal)。", meaningEN: "Grandmother" },
+                    { text: "爸爸", jyutping: "baa1 baa1", meaningZH: "Dad。", meaningEN: "Father" },
+                    { text: "媽媽", jyutping: "maa1 maa1", meaningZH: "Mom。", meaningEN: "Mother" },
+                    { text: "哥哥", jyutping: "go1 go1", meaningZH: "Older brother。", meaningEN: "Older brother" },
+                    { text: "姐姐", jyutping: "ze2 ze2", meaningZH: "Older sister。", meaningEN: "Older sister" },
+                    { text: "弟弟", jyutping: "dai6 dai2", meaningZH: "Younger brother。", meaningEN: "Younger brother" },
+                    { text: "妹妹", jyutping: "mui6 mui2", meaningZH: "Younger sister。", meaningEN: "Younger sister" },
+                    { text: "先生", jyutping: "sin1 saang1", meaningZH: "Mr. / Husband。", meaningEN: "Mr. / Husband" },
+                    { text: "太太", jyutping: "taai3 taai3", meaningZH: "Mrs. / Wife。", meaningEN: "Mrs. / Wife" },
+                    { text: "兒子", jyutping: "ji4 zi2", meaningZH: "Son。", meaningEN: "Son" },
+                    { text: "女兒", jyutping: "neoi5 ji4", meaningZH: "Daughter。", meaningEN: "Daughter" },
+                    { text: "朋友", jyutping: "pang4 jau5", meaningZH: "Friend。", meaningEN: "Friend" },
+                    { text: "狗", jyutping: "gau2", meaningZH: "Dog。", meaningEN: "Dog" },
+                    { text: "貓", jyutping: "maau1", meaningZH: "Cat。", meaningEN: "Cat" }
+                ]}
+            ]
+        },
+        9: {
+            title: "IGCSE - Topic Area D",
+            lessons: [
+                { id: 1, title: "食物及飲品", words: [
+                    { text: "米飯", jyutping: "mai5 faan6", meaningZH: "Rice。", meaningEN: "Cooked rice" },
+                    { text: "早飯", jyutping: "zou2 faan6", meaningZH: "Breakfast。", meaningEN: "Breakfast" },
+                    { text: "午飯", jyutping: "ng5 faan6", meaningZH: "Lunch。", meaningEN: "Lunch" },
+                    { text: "晚飯", jyutping: "maan5 faan6", meaningZH: "Dinner。", meaningEN: "Dinner" },
+                    { text: "麵包", jyutping: "min6 baau1", meaningZH: "Bread。", meaningEN: "Bread" },
+                    { text: "麵條", jyutping: "min6 tiu4", meaningZH: "Noodles。", meaningEN: "Noodles" },
+                    { text: "魚", jyutping: "jyu2", meaningZH: "Fish。", meaningEN: "Fish" },
+                    { text: "雞", jyutping: "gai1", meaningZH: "Chicken。", meaningEN: "Chicken" },
+                    { text: "肉", jyutping: "juk6", meaningZH: "Meat。", meaningEN: "Meat" },
+                    { text: "牛肉", jyutping: "ngau4 juk6", meaningZH: "Beef。", meaningEN: "Beef" },
+                    { text: "豬肉", jyutping: "zyu1 juk6", meaningZH: "Pork。", meaningEN: "Pork" },
+                    { text: "蛋", jyutping: "daan2", meaningZH: "Egg。", meaningEN: "Egg" },
+                    { text: "菜", jyutping: "coi3", meaningZH: "Vegetable。", meaningEN: "Vegetable" },
+                    { text: "水果", jyutping: "seoi2 gwo2", meaningZH: "Fruit。", meaningEN: "Fruit" },
+                    { text: "茶", jyutping: "caa4", meaningZH: "Tea。", meaningEN: "Tea" },
+                    { text: "咖啡", jyutping: "gaa3 fe1", meaningZH: "Coffee。", meaningEN: "Coffee" },
+                    { text: "水", jyutping: "seoi2", meaningZH: "Water。", meaningEN: "Water" },
+                    { text: "牛奶", jyutping: "ngau4 naai5", meaningZH: "Milk。", meaningEN: "Milk" },
+                    { text: "果汁", jyutping: "gwo2 zap1", meaningZH: "Juice。", meaningEN: "Juice" },
+                    { text: "餃子", jyutping: "gaau2 zi2", meaningZH: "Dumplings。", meaningEN: "Dumplings" },
+                    { text: "餐廳", jyutping: "caan1 teng1", meaningZH: "Restaurant。", meaningEN: "Restaurant" }
+                ]},
+                { id: 2, title: "社會與環境", words: [
+                    { text: "世界", jyutping: "sai3 gaai3", meaningZH: "World。", meaningEN: "World" },
+                    { text: "山", jyutping: "saan1", meaningZH: "Mountain。", meaningEN: "Mountain" },
+                    { text: "河", jyutping: "ho4", meaningZH: "River。", meaningEN: "River" },
+                    { text: "湖", jyutping: "wu4", meaningZH: "Lake。", meaningEN: "Lake" },
+                    { text: "海", jyutping: "hoi2", meaningZH: "Sea。", meaningEN: "Sea" },
+                    { text: "樹", jyutping: "syu6", meaningZH: "Tree。", meaningEN: "Tree" },
+                    { text: "花", jyutping: "faa1", meaningZH: "Flower。", meaningEN: "Flower" },
+                    { text: "草", jyutping: "cou2", meaningZH: "Grass。", meaningEN: "Grass" },
+                    { text: "動物園", jyutping: "dung6 mat6 jyun4", meaningZH: "Zoo。", meaningEN: "Zoo" },
+                    { text: "污染", jyutping: "wu1 jim5", meaningZH: "Pollution。", meaningEN: "Pollution" },
+                    { text: "空氣", jyutping: "hung1 hei3", meaningZH: "Air。", meaningEN: "Air" },
+                    { text: "地球", jyutping: "dei6 kau4", meaningZH: "Earth。", meaningEN: "Earth" },
+                    { text: "新聞", jyutping: "san1 man4", meaningZH: "News。", meaningEN: "News" }
+                ]}
+            ]
+        },
+        10: {
+            title: "IGCSE - Topic Area E",
+            lessons: [
+                { id: 1, title: "資訊及通訊科技", words: [
+                    { text: "電話", jyutping: "din6 waa2", meaningZH: "Telephone。", meaningEN: "Telephone" },
+                    { text: "手機", jyutping: "sau2 gei1", meaningZH: "Mobile phone。", meaningEN: "Mobile phone" },
+                    { text: "電腦", jyutping: "din6 nou5", meaningZH: "Computer。", meaningEN: "Computer" },
+                    { text: "上網", jyutping: "soeng5 mong5", meaningZH: "Go online。", meaningEN: "Surf the internet" },
+                    { text: "電子郵件", jyutping: "din6 zi2 jau4 gin6", meaningZH: "Email。", meaningEN: "Email" },
+                    { text: "網站", jyutping: "mong5 zaam6", meaningZH: "Website。", meaningEN: "Website" },
+                    { text: "網頁", jyutping: "mong5 jip6", meaningZH: "Web page。", meaningEN: "Web page" },
+                    { text: "短信", jyutping: "dyun2 seon3", meaningZH: "SMS。", meaningEN: "Text message" }
+                ]},
+                { id: 2, title: "特殊場合與興趣", words: [
+                    { text: "生日", jyutping: "saang1 jat6", meaningZH: "Birthday。", meaningEN: "Birthday" },
+                    { text: "祝", jyutping: "zuk1", meaningZH: "Wish。", meaningEN: "To wish" },
+                    { text: "新年", jyutping: "san1 nin4", meaningZH: "New Year。", meaningEN: "New Year" },
+                    { text: "聖誕節", jyutping: "sing3 daan3 zit3", meaningZH: "Christmas。", meaningEN: "Christmas" },
+                    { text: "禮物", jyutping: "lai5 mat6", meaningZH: "Gift。", meaningEN: "Gift" },
+                    { text: "愛好", jyutping: "oi3 hou3", meaningZH: "Hobby。", meaningEN: "Hobby" },
+                    { text: "運動", jyutping: "wan6 dung6", meaningZH: "Sports。", meaningEN: "Sports" },
+                    { text: "足球", jyutping: "zuk1 kau4", meaningZH: "Football。", meaningEN: "Soccer" },
+                    { text: "籃球", jyutping: "laam4 kau4", meaningZH: "Basketball。", meaningEN: "Basketball" },
+                    { text: "游泳", jyutping: "jau4 wing6", meaningZH: "Swimming。", meaningEN: "Swimming" },
+                    { text: "畫畫", jyutping: "waak6 waa2", meaningZH: "Drawing。", meaningEN: "Painting/Drawing" },
+                    { text: "看書", jyutping: "hon3 syu1", meaningZH: "Reading。", meaningEN: "Reading books" },
+                    { text: "音樂", jyutping: "jam1 ngok6", meaningZH: "Music。", meaningEN: "Music" },
+                    { text: "電影", jyutping: "din6 jing2", meaningZH: "Movie。", meaningEN: "Movie" },
+                    { text: "買", jyutping: "maai5", meaningZH: "Buy。", meaningEN: "To buy" },
+                    { text: "賣", jyutping: "maai6", meaningZH: "Sell。", meaningEN: "To sell" },
+                    { text: "錢", jyutping: "cin2", meaningZH: "Money。", meaningEN: "Money" },
+                    { text: "便宜", jyutping: "pin4 ji4", meaningZH: "Cheap。", meaningEN: "Cheap" },
+                    { text: "貴", jyutping: "gwai3", meaningZH: "Expensive。", meaningEN: "Expensive" }
+                ]},
+                { id: 3, title: "健康與意外", words: [
+                    { text: "身體", jyutping: "san1 tai2", meaningZH: "Body。", meaningEN: "Body" },
+                    { text: "頭", jyutping: "tau4", meaningZH: "Head。", meaningEN: "Head" },
+                    { text: "手", jyutping: "sau2", meaningZH: "Hand。", meaningEN: "Hand" },
+                    { text: "腳", jyutping: "goek3", meaningZH: "Foot/Leg。", meaningEN: "Foot/Leg" },
+                    { text: "眼", jyutping: "ngaan5", meaningZH: "Eye。", meaningEN: "Eye" },
+                    { text: "耳", jyutping: "ji5", meaningZH: "Ear。", meaningEN: "Ear" },
+                    { text: "病", jyutping: "beng6", meaningZH: "Sick。", meaningEN: "Illness" },
+                    { text: "發燒", jyutping: "faat3 siu1", meaningZH: "Fever。", meaningEN: "Fever" },
+                    { text: "感冒", jyutping: "gam2 mo6", meaningZH: "Cold。", meaningEN: "Cold" },
+                    { text: "疼", jyutping: "tung3", meaningZH: "Pain。", meaningEN: "Painful" }
+                ]}
+            ] 
         }
     };
     
