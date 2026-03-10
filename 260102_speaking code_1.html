@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+ <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -209,7 +209,18 @@
                     { text: "餵", jyutping: "wai3", meaningZH: "給東西吃。", meaningEN: "To feed" }, 
                     { text: "嘈吵", jyutping: "cou4 caau2", meaningZH: "聲音雜亂。", meaningEN: "Noisy" }
                 ] },
-                { id: 7, title: "第七課", words: [{ text: "爸爸", jyutping: "baa1 baa1" }] },
+                { id: 6, title: "第七課〈我家附近有商場〉", words: [
+                    { text: "銀行", jyutping: "ngan4 hong4", meaningZH: "辦理存款、貸款等金融業務的機構。", meaningEN: "Bank" }, 
+                    { text: "超級市場", jyutping: "ciu1 kap1 si5 coeng4", meaningZH: "售賣各種食品和日用品的大型商店。", meaningEN: "Supermarket" }, 
+                    { text: "便利店", jyutping: "bin6 lei6 dim3", meaningZH: "營業時間長，售賣日常用品和食品的小型商店。", meaningEN: "Convenience store" },
+                    { text: "髮型屋", jyutping: "faat3 jing4 uk1", meaningZH: "提供理髮、造型服務的店鋪。", meaningEN: "Hair salon / Barber shop" }, 
+                    { text: "圖書館", jyutping: "tou4 syu1 gun2", meaningZH: "收藏圖書資料，供人借閱和學習的地方。", meaningEN: "Library" }, 
+{ text: "公共廁所", jyutping: "gung1 gung6 ci3 so2", meaningZH: "供大眾使用的洗手間。", meaningEN: "Public toilet" },
+{ text: "停車場", jyutping: "ting4 ce1 coeng4", meaningZH: "供車輛停泊的專用場所。", meaningEN: "Car park / Parking lot" }, 
+{ text: "商店", jyutping: "soeng1 dim3", meaningZH: "出售商品的地方。", meaningEN: "Shop / Store" }, 
+{ text: "電影院", jyutping: "din6 jing2 jyun2", meaningZH: "放映電影的場所。", meaningEN: "Cinema / Movie theater" },
+{ text: "書店", jyutping: "syu1 dim3", meaningZH: "售賣書籍的商店。", meaningEN: "Bookstore / Bookshop" }, 
+                ] },
                 { id: 8, title: "第八課", words: [{ text: "一二三", jyutping: "yat1 yi6 saam1" }] },
                 { id: 9, title: "第九課", words: [{ text: "好食", jyutping: "hou2 sik6" }] },
                 { id: 10, title: "第十課", words: [{ text: "香港", jyutping: "hoeng1 gong2" }] }
@@ -848,7 +859,7 @@
         targetCtx.fillText(currentCharacter, 170, 185);
     }
 
-    // ★★★ 優化點 3：寬容評分演算法 ★★★
+    // 評分演算法 
     window.checkSimilarity = function() {
         const studentData = ctx.getImageData(0, 0, 340, 340).data;
         const targetData = targetCtx.getImageData(0, 0, 340, 340).data;
@@ -874,7 +885,7 @@
         // 原始覆蓋率
         const rawCoverage = overlapPixels / targetPixels;
         
-        // ★★★ 關鍵修改：分數倍增器 (Difficulty Multiplier) ★★★
+        // 關鍵修改：分數倍增器 (Difficulty Multiplier)
         const difficultyMultiplier = 2; 
         
         // 計算基礎分
