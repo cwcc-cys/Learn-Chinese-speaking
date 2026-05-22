@@ -54,10 +54,41 @@
     <div id="app" class="w-full max-w-4xl bg-white shadow-2xl rounded-xl p-6 md:p-10 relative z-10">
         <h1 id="header-title" class="text-3xl font-bold text-gray-800 text-center mb-6">粵語詞彙發音系統</h1>
         
-        <div id="breadcrumb" class="text-sm text-gray-500 mb-6 flex space-x-2 items-center">
+<div id="breadcrumb" class="text-sm text-gray-500 mb-6 flex space-x-2 items-center">
             <span class="cursor-pointer hover:text-blue-600 transition duration-150" onclick="renderHome()">主頁</span>
             <span id="breadcrumb-book" class="hidden">/ <span class="font-medium text-gray-600 transition duration-150"></span></span>
             <span id="breadcrumb-lesson" class="hidden">/ <span class="font-medium text-gray-800 transition duration-150"></span></span>
+        </div>
+
+<div class="mb-6">
+            <button onclick="openQuizSetup()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl shadow-md font-bold text-sm transition-all transform active:scale-95 flex items-center gap-2">
+                ⚙️ 自訂範圍並生成測驗
+            </button>
+        </div>
+
+        <div id="quiz-setup-container" class="hidden mb-6 p-6 bg-white border border-indigo-200 rounded-2xl shadow-sm">
+            <h2 class="text-xl font-bold text-indigo-900 mb-4 flex items-center gap-2">📚 請選擇你要溫習的課目</h2>
+            <p class="text-sm text-gray-500 mb-4">您可以同時勾選多個課目，系統將從您選擇的範圍內隨機抽取 20 題。</p>
+            
+            <div id="quiz-scope-list" class="space-y-4 mb-6 max-h-64 overflow-y-auto p-4 border border-gray-100 rounded-xl bg-gray-50">
+                </div>
+            
+            <div class="flex gap-3">
+                <button onclick="startCustomQuiz()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg font-bold shadow transition-all flex items-center gap-2">
+                    🚀 開始測驗
+                </button>
+                <button onclick="document.getElementById('quiz-setup-container').classList.add('hidden')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2.5 rounded-lg font-bold transition-all">
+                    取消
+                </button>
+            </div>
+        </div>
+
+        <div id="quiz-container" class="hidden mb-6 p-6 bg-indigo-50 border border-indigo-100 rounded-2xl shadow-sm">
+            <div class="flex justify-between items-center mb-4 border-b border-indigo-200 pb-3">
+                <h2 class="text-2xl font-bold text-indigo-900 flex items-center gap-2">📝 詞彙隨機挑戰賽</h2>
+                <span id="quiz-score" class="bg-indigo-200 text-indigo-800 font-bold px-3 py-1 rounded-full text-sm">得分：0 / 20</span>
+            </div>
+            <div id="quiz-content" class="space-y-6"></div>
         </div>
 
         <div id="browser-tts-info" class="p-3 bg-blue-100 text-blue-700 rounded-lg border border-blue-400 mt-2 mb-6 text-sm">
@@ -1007,9 +1038,380 @@
     window.selectLesson = (id) => { selectedLesson = id; renderLesson(); };
     window.renderHome = renderHome; window.renderBook = renderBook;
     window.selectChar = selectChar; window.nextChar = nextChar; 
+    window.learningMaterial = learningMaterial;
     window.checkSimilarity = checkSimilarity; window.animateChar = animateChar;
     window.openDefinitionModal = openDefinitionModal; window.showEnglishDefinition = showEnglishDefinition; window.closeDefinitionModal = closeDefinitionModal;
     window.onload = renderHome;
+
+    javascript
+
+
+</script>
+<script>
+    let quizQuestions = [];
+    let correctCount = 0;
+    let answeredQuestionsCount = 0; 
+    let detectedBooks = []; // 用於存放標準化後的冊課與單字結構
+
+    // 核心功能：深度雷達掃描解析器
+    function parseLearningMaterial() {
+        detectedBooks = [];
+        const mat = window.learningMaterial;
+        if (!mat) return;
+
+        // 輔助函式：遞迴提取某區塊內的所有合法單字物件
+        function extractWords(obj) {
+            let list = [];
+            function scan(o) {
+                if (!o || typeof o !== 'object') return;
+                // 如果物件本身就是單字節點
+                if (o.text && (o.meaningZH || o.meaningEN)) {
+                    list.push(o);
+                    return;
+                }
+                // 如果是陣列，遍歷其核心
+                if (Array.isArray(o)) {
+                    o.forEach(item => scan(item));
+                    return;
+                }
+                // 如果是物件，掃描所有屬性值 (跳過非字詞的元數據)
+                for (const k in o) {
+                    if (o.hasOwnProperty(k) && k !== 'title' && k !== 'name' && k !== 'id') {
+                        scan(o[k]);
+                    }
+                }
+            }
+            scan(obj);
+            return list;
+        }
+
+        // 核心處理：分析單一冊物件並拆解課目
+        function processBook(bookKey, bookObj) {
+            let bookTitle = bookKey;
+            let rawLessons = null;
+
+            if (bookObj && typeof bookObj === 'object') {
+                // 優先採用物件內部定義的書名
+                if (bookObj.title || bookObj.name) {
+                    bookTitle = bookObj.title || bookObj.name;
+                }
+                // 偵測是否存在單獨的課目容器欄位
+                if (bookObj.lessons) rawLessons = bookObj.lessons;
+                else if (bookObj.lessonsList) rawLessons = bookObj.lessonsList;
+                else if (bookObj.list) rawLessons = bookObj.list;
+            }
+
+            let lessonsList = [];
+
+            // 狀況 A：存在獨立的課目容器 (陣列或物件)
+            if (rawLessons && typeof rawLessons === 'object') {
+                if (Array.isArray(rawLessons)) {
+                    rawLessons.forEach((lessonObj, lIdx) => {
+                        let lessonTitle = (lessonObj && (lessonObj.title || lessonObj.name)) || `第 ${lIdx + 1} 課`;
+                        let words = extractWords(lessonObj);
+                        if (words.length > 0) {
+                            lessonsList.push({ title: lessonTitle, words: words });
+                        }
+                    });
+                } else {
+                    // 課目容器是物件 { "lesson_1": { title: "第一課...", words: [] } }
+                    for (let lessonKey in rawLessons) {
+                        if (!rawLessons.hasOwnProperty(lessonKey)) continue;
+                        let lessonObj = rawLessons[lessonKey];
+                        let lessonTitle = lessonKey;
+                        if (lessonObj && typeof lessonObj === 'object' && (lessonObj.title || lessonObj.name)) {
+                            lessonTitle = lessonObj.title || lessonObj.name;
+                        }
+                        let words = extractWords(lessonObj);
+                        if (words.length > 0) {
+                            lessonsList.push({ title: lessonTitle, words: words });
+                        }
+                    }
+                }
+            } 
+            // 狀況 B：冊物件本身就是陣列 (直接裝載課目)
+            else if (Array.isArray(bookObj)) {
+                bookObj.forEach((lessonObj, lIdx) => {
+                    let lessonTitle = (lessonObj && (lessonObj.title || lessonObj.name)) || `第 ${lIdx + 1} 課`;
+                    let words = extractWords(lessonObj);
+                    if (words.length > 0) {
+                        lessonsList.push({ title: lessonTitle, words: words });
+                    }
+                });
+            }
+            // 狀況 C：沒有包裝欄位，物件的屬性直接對應課目
+            else if (bookObj && typeof bookObj === 'object') {
+                for (let lessonKey in bookObj) {
+                    if (!bookObj.hasOwnProperty(lessonKey)) continue;
+                    if (lessonKey === 'title' || lessonKey === 'name' || lessonKey === 'id' || lessonKey === 'lessons') continue;
+                    
+                    let lessonObj = bookObj[lessonKey];
+                    let lessonTitle = lessonKey;
+                    if (lessonObj && typeof lessonObj === 'object' && (lessonObj.title || lessonObj.name)) {
+                        lessonTitle = lessonObj.title || lessonObj.name;
+                    }
+                    let words = extractWords(lessonObj);
+                    if (words.length > 0) {
+                        lessonsList.push({ title: lessonTitle, words: words });
+                    }
+                }
+            }
+
+            if (lessonsList.length > 0) {
+                detectedBooks.push({ title: bookTitle, lessons: lessonsList });
+            }
+        }
+
+        // 頂層字詞庫形式判斷
+        if (Array.isArray(mat)) {
+            mat.forEach((item, index) => {
+                if (item && typeof item === 'object') {
+                    let bKey = item.title || item.name || `第 ${index + 1} 冊`;
+                    processBook(bKey, item);
+                }
+            });
+        } else if (typeof mat === 'object' && mat !== null) {
+            // 是否有全域的 books 節點
+            if (mat.books) {
+                if (Array.isArray(mat.books)) {
+                    mat.books.forEach((b, i) => processBook(b.title || b.name || `第 ${i + 1} 冊`, b));
+                } else if (typeof mat.books === 'object') {
+                    for (let k in mat.books) {
+                        if (mat.books.hasOwnProperty(k)) processBook(k, mat.books[k]);
+                    }
+                }
+            } else {
+                for (let bookKey in mat) {
+                    if (mat.hasOwnProperty(bookKey)) {
+                        processBook(bookKey, mat[bookKey]);
+                    }
+                }
+            }
+        }
+    }
+
+    // 1. 開啟並渲染「選擇課目」面板
+    window.openQuizSetup = function() {
+        const setupContainer = document.getElementById('quiz-setup-container');
+        const scopeList = document.getElementById('quiz-scope-list');
+        const quizContainer = document.getElementById('quiz-container');
+        
+        quizContainer.classList.add('hidden'); 
+        setupContainer.classList.remove('hidden'); 
+
+        if (typeof window.learningMaterial === 'undefined') {
+            scopeList.innerHTML = '<p class="text-red-500 font-bold">錯誤：讀取不到字詞庫！請確認網頁是否正常載入。</p>';
+            return;
+        }
+
+        // 執行深度結構解析
+        parseLearningMaterial();
+
+        if (detectedBooks.length === 0) {
+            scopeList.innerHTML = '<p class="text-red-500 font-bold">⚠️ 系統無法從當前字詞庫中抽取到有效的單字與課目，請確認資料格式。</p>';
+            return;
+        }
+
+        let html = '';
+        detectedBooks.forEach((book, bIdx) => {
+            html += `<div class="mb-4"><h3 class="font-bold text-indigo-800 border-b-2 border-indigo-100 pb-1 mb-3 flex items-center gap-2">📘 ${book.title}</h3><div class="flex flex-wrap gap-3">`;
+            
+            book.lessons.forEach((lesson, lIdx) => {
+                // 利用全安全的雙索引對齊，避免任何特殊課名符號導致代碼崩潰
+                const pathId = `${bIdx}|||${lIdx}`;
+                html += `
+                <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-gray-200 hover:bg-indigo-50 hover:border-indigo-300 transition-all shadow-sm">
+                    <input type="checkbox" class="quiz-scope-checkbox form-checkbox h-4 w-4 text-indigo-600 rounded" value="${pathId}">
+                    <span class="text-sm font-medium text-gray-700">${lesson.title}</span>
+                </label>`;
+            });
+            html += `</div></div>`;
+        });
+        scopeList.innerHTML = html;
+    };
+
+    // 2. 根據勾選的範圍開始測驗
+    window.startCustomQuiz = function() {
+        const checkboxes = document.querySelectorAll('.quiz-scope-checkbox:checked');
+        const selectedScopes = Array.from(checkboxes).map(cb => cb.value);
+
+        if (selectedScopes.length === 0) {
+            alert("⚠️ 請至少勾選一個課目來進行溫習！");
+            return;
+        }
+
+        let allWords = [];
+        selectedScopes.forEach(scope => {
+            const parts = scope.split('|||');
+            const bIdx = parseInt(parts[0]);
+            const lIdx = parseInt(parts[1]);
+            
+            if (detectedBooks[bIdx] && detectedBooks[bIdx].lessons[lIdx]) {
+                const lesson = detectedBooks[bIdx].lessons[lIdx];
+                const bookTitle = detectedBooks[bIdx].title;
+                
+                lesson.words.forEach(w => {
+                    allWords.push({
+                        ...w,
+                        sourceBook: bookTitle,
+                        sourceLesson: lesson.title
+                    });
+                });
+            }
+        });
+
+        if (allWords.length < 4) {
+            alert(`⚠️ 您勾選的範圍內單字數量太少（僅 ${allWords.length} 個），無法生成四選一題目，請多勾選幾個課目！`);
+            return;
+        }
+
+        document.getElementById('quiz-setup-container').classList.add('hidden');
+        correctCount = 0;
+        answeredQuestionsCount = 0;
+        quizQuestions = [];
+
+        // 混合打亂並隨機挑選最多20題
+        const shuffledWords = [...allWords].sort(() => 0.5 - Math.random());
+        const totalQuestionsCount = Math.min(20, shuffledWords.length);
+        const targetWords = shuffledWords.slice(0, totalQuestionsCount);
+        
+        document.getElementById('quiz-score').innerText = `得分：0 / ${totalQuestionsCount}`;
+
+        targetWords.forEach((target, index) => {
+            const wrongCandidates = allWords.filter(w => w.text !== target.text);
+            const shuffledWrong = wrongCandidates.sort(() => 0.5 - Math.random());
+            const wrongChoices = shuffledWrong.slice(0, 3);
+            const optionsPool = [target, ...wrongChoices].sort(() => 0.5 - Math.random());
+            const correctAnswerIndex = optionsPool.findIndex(o => o.text === target.text);
+            const isQuestionTypeText = Math.random() > 0.5;
+
+            let questionText = isQuestionTypeText 
+                ? `請選出「<span class="text-indigo-600 font-bold">${target.text}</span>」${target.jyutping ? `(${target.jyutping})` : ''} 的正確中文意思：`
+                : `以下哪一個字詞的意思是：「<span class="text-indigo-600 font-bold">${target.meaningZH || '（無解釋）'}</span>」？`;
+
+            let optionLabels = isQuestionTypeText
+                ? optionsPool.map(o => `${o.meaningZH || '（無解釋）'}`)
+                : optionsPool.map(o => `<span class="font-medium">${o.text}</span> ${o.jyutping ? `(${o.jyutping})` : ''}`);
+
+            const hintText = `來源：${target.sourceBook} - ${target.sourceLesson}`;
+
+            quizQuestions.push({
+                question: questionText, options: optionLabels, correctIndex: correctAnswerIndex, hint: hintText, answered: false
+            });
+        });
+
+        const quizContainer = document.getElementById('quiz-container');
+        quizContainer.classList.remove('hidden');
+        renderLocalQuizHTML();
+        quizContainer.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    function renderLocalQuizHTML() {
+        const container = document.getElementById('quiz-content');
+        let html = "";
+        quizQuestions.forEach((q, qIdx) => {
+            html += `
+            <div id="q-block-${qIdx}" class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                <div class="flex items-start gap-2">
+                    <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded mt-0.5">${qIdx + 1}</span>
+                    <h3 class="text-gray-800 text-base md:text-lg mb-2">${q.question}</h3>
+                </div>
+                <p class="text-xs text-gray-400 mb-3 ml-7 flex items-center gap-1">📍 ${q.hint}</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 ml-7">`;
+            
+            q.options.forEach((opt, optIdx) => {
+                html += `
+                <button id="btn-${qIdx}-${optIdx}" onclick="checkLocalAnswer(${qIdx}, ${optIdx})" 
+                        class="text-left px-4 py-3 bg-gray-50 hover:bg-indigo-50 border border-gray-200 rounded-xl text-sm transition-all focus:outline-none">
+                    <span class="inline-block bg-white border border-gray-300 text-gray-500 rounded-md w-6 h-6 text-center leading-5 mr-2 font-bold text-xs">${String.fromCharCode(65 + optIdx)}</span>
+                    ${opt}
+                </button>`;
+            });
+            html += `</div></div>`;
+        });
+        
+        html += `<div id="quiz-feedback-block" class="hidden mt-8 transition-all duration-500"></div>`;
+        container.innerHTML = html;
+    }
+
+    window.checkLocalAnswer = function(qIdx, selectedIdx) {
+        const question = quizQuestions[qIdx];
+        if (question.answered) return;
+        question.answered = true;
+        answeredQuestionsCount++; 
+
+        const correctIdx = question.correctIndex;
+        const block = document.getElementById(`q-block-${qIdx}`);
+        
+        question.options.forEach((_, optIdx) => {
+            const btn = document.getElementById(`btn-${qIdx}-${optIdx}`);
+            btn.disabled = true;
+            btn.classList.remove('hover:bg-indigo-50');
+            
+            if (optIdx === correctIdx) {
+                btn.classList.add('bg-green-100', 'border-green-500', 'text-green-800', 'font-semibold');
+                btn.querySelector('span').classList.add('bg-green-500', 'text-white', 'border-green-500');
+            } else if (optIdx === selectedIdx) {
+                btn.classList.add('bg-red-50', 'border-red-400', 'text-red-700', 'line-through');
+                btn.querySelector('span').classList.add('bg-red-400', 'text-white', 'border-red-400');
+            } else {
+                btn.classList.add('opacity-40');
+            }
+        });
+
+        if (selectedIdx === correctIdx) {
+            correctCount++;
+            document.getElementById('quiz-score').innerText = `得分：${correctCount} / ${quizQuestions.length}`;
+            block.classList.add('border-green-200', 'bg-green-50/30');
+        } else {
+            block.classList.add('border-red-200', 'bg-red-50/30');
+        }
+
+        if (answeredQuestionsCount === quizQuestions.length) {
+            showPositiveFeedback();
+        }
+    };
+
+    function showPositiveFeedback() {
+        const feedbackBlock = document.getElementById('quiz-feedback-block');
+        const percentage = correctCount / quizQuestions.length;
+        
+        let emoji = "🌟";
+        let title = "測驗完成！";
+        let message = "";
+        let bgColor = "from-green-50 to-emerald-100 border-green-200";
+        let textColor = "text-green-800";
+
+        if (percentage === 1) {
+            emoji = "🏆"; title = "完美滿分！太厲害了！"; message = "你對這些字詞已經倒背如流了，繼續保持這個完美的狀態！";
+            bgColor = "from-yellow-50 to-orange-100 border-yellow-300"; textColor = "text-orange-800";
+        } else if (percentage >= 0.8) {
+            emoji = "🎉"; title = "做得非常好！"; message = "你的詞彙量非常豐富，只差一點點就完美了，真的很棒！";
+        } else if (percentage >= 0.6) {
+            emoji = "👍"; title = "表現不錯喔！"; message = "基礎很紮實！把這次答錯的題目多看幾遍，下次一定能拿高分！";
+            bgColor = "from-blue-50 to-indigo-100 border-blue-200"; textColor = "text-blue-800";
+        } else {
+            emoji = "💪"; title = "繼續加油！"; message = "學習就是一個不斷進步的過程！別氣餒，針對不熟的課目再挑戰一次吧！";
+            bgColor = "from-gray-50 to-gray-100 border-gray-300"; textColor = "text-gray-700";
+        }
+
+        feedbackBlock.className = `mt-8 p-8 rounded-2xl border-2 bg-gradient-to-br ${bgColor} shadow-lg text-center transform transition-all duration-500 ease-out`;
+        feedbackBlock.innerHTML = `
+            <div class="text-5xl mb-4 animate-bounce">${emoji}</div>
+            <h2 class="text-2xl font-bold ${textColor} mb-2">${title}</h2>
+            <p class="text-gray-700 text-lg mb-4">${message}</p>
+            <div class="inline-block bg-white px-6 py-2 rounded-full font-bold text-xl shadow-sm ${textColor}">
+                最終得分：${correctCount} / ${quizQuestions.length}
+            </div>
+            <div class="mt-6">
+                <button onclick="openQuizSetup()" class="bg-white border-2 border-current text-current px-6 py-2 rounded-lg font-bold hover:opacity-80 transition-opacity">
+                    🔄 再次設定範圍挑戰
+                </button>
+            </div>
+        `;
+        feedbackBlock.classList.remove('hidden');
+        setTimeout(() => feedbackBlock.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+    }
 </script>
 </body>
 </html>
