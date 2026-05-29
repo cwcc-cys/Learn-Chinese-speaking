@@ -1064,17 +1064,14 @@
             let list = [];
             function scan(o) {
                 if (!o || typeof o !== 'object') return;
-                // 如果物件本身就是單字節點
                 if (o.text && (o.meaningZH || o.meaningEN)) {
                     list.push(o);
                     return;
                 }
-                // 如果是陣列，遍歷其核心
                 if (Array.isArray(o)) {
                     o.forEach(item => scan(item));
                     return;
                 }
-                // 如果是物件，掃描所有屬性值 (跳過非字詞的元數據)
                 for (const k in o) {
                     if (o.hasOwnProperty(k) && k !== 'title' && k !== 'name' && k !== 'id') {
                         scan(o[k]);
@@ -1091,11 +1088,9 @@
             let rawLessons = null;
 
             if (bookObj && typeof bookObj === 'object') {
-                // 優先採用物件內部定義的書名
                 if (bookObj.title || bookObj.name) {
                     bookTitle = bookObj.title || bookObj.name;
                 }
-                // 偵測是否存在單獨的課目容器欄位
                 if (bookObj.lessons) rawLessons = bookObj.lessons;
                 else if (bookObj.lessonsList) rawLessons = bookObj.lessonsList;
                 else if (bookObj.list) rawLessons = bookObj.list;
@@ -1103,7 +1098,6 @@
 
             let lessonsList = [];
 
-            // 狀況 A：存在獨立的課目容器 (陣列或物件)
             if (rawLessons && typeof rawLessons === 'object') {
                 if (Array.isArray(rawLessons)) {
                     rawLessons.forEach((lessonObj, lIdx) => {
@@ -1114,7 +1108,6 @@
                         }
                     });
                 } else {
-                    // 課目容器是物件 { "lesson_1": { title: "第一課...", words: [] } }
                     for (let lessonKey in rawLessons) {
                         if (!rawLessons.hasOwnProperty(lessonKey)) continue;
                         let lessonObj = rawLessons[lessonKey];
@@ -1129,7 +1122,6 @@
                     }
                 }
             } 
-            // 狀況 B：冊物件本身就是陣列 (直接裝載課目)
             else if (Array.isArray(bookObj)) {
                 bookObj.forEach((lessonObj, lIdx) => {
                     let lessonTitle = (lessonObj && (lessonObj.title || lessonObj.name)) || `第 ${lIdx + 1} 課`;
@@ -1139,7 +1131,6 @@
                     }
                 });
             }
-            // 狀況 C：沒有包裝欄位，物件的屬性直接對應課目
             else if (bookObj && typeof bookObj === 'object') {
                 for (let lessonKey in bookObj) {
                     if (!bookObj.hasOwnProperty(lessonKey)) continue;
@@ -1162,7 +1153,6 @@
             }
         }
 
-        // 頂層字詞庫形式判斷
         if (Array.isArray(mat)) {
             mat.forEach((item, index) => {
                 if (item && typeof item === 'object') {
@@ -1171,7 +1161,6 @@
                 }
             });
         } else if (typeof mat === 'object' && mat !== null) {
-            // 是否有全域的 books 節點
             if (mat.books) {
                 if (Array.isArray(mat.books)) {
                     mat.books.forEach((b, i) => processBook(b.title || b.name || `第 ${i + 1} 冊`, b));
@@ -1200,15 +1189,14 @@
         setupContainer.classList.remove('hidden'); 
 
         if (typeof window.learningMaterial === 'undefined') {
-            scopeList.innerHTML = '<p class="text-red-500 font-bold">錯誤：讀取不到字詞庫！請確認網頁是否正常載入。</p>';
+            scopeList.innerHTML = '<p class="text-red-500 font-bold">錯誤：讀取不到字詞庫！</p>';
             return;
         }
 
-        // 執行深度結構解析
         parseLearningMaterial();
 
         if (detectedBooks.length === 0) {
-            scopeList.innerHTML = '<p class="text-red-500 font-bold">⚠️ 系統無法從當前字詞庫中抽取到有效的單字與課目，請確認資料格式。</p>';
+            scopeList.innerHTML = '<p class="text-red-500 font-bold">⚠️ 無法抽取到有效的單字與課目。</p>';
             return;
         }
 
@@ -1217,7 +1205,6 @@
             html += `<div class="mb-4"><h3 class="font-bold text-indigo-800 border-b-2 border-indigo-100 pb-1 mb-3 flex items-center gap-2">📘 ${book.title}</h3><div class="flex flex-wrap gap-3">`;
             
             book.lessons.forEach((lesson, lIdx) => {
-                // 利用全安全的雙索引對齊，避免任何特殊課名符號導致代碼崩潰
                 const pathId = `${bIdx}|||${lIdx}`;
                 html += `
                 <label class="flex items-center space-x-2 cursor-pointer bg-white px-3 py-2 rounded-lg border border-gray-200 hover:bg-indigo-50 hover:border-indigo-300 transition-all shadow-sm">
@@ -1230,7 +1217,7 @@
         scopeList.innerHTML = html;
     };
 
-    // 2. 根據勾選的範圍開始測驗
+    // 2. 根據勾選的範圍開始測驗 (調降為最高 10 題)
     window.startCustomQuiz = function() {
         const checkboxes = document.querySelectorAll('.quiz-scope-checkbox:checked');
         const selectedScopes = Array.from(checkboxes).map(cb => cb.value);
@@ -1261,7 +1248,7 @@
         });
 
         if (allWords.length < 4) {
-            alert(`⚠️ 您勾選的範圍內單字數量太少（僅 ${allWords.length} 個），無法生成四選一題目，請多勾選幾個課目！`);
+            alert(`⚠️ 您勾選的範圍內單字數量太少（僅 ${allWords.length} 個），無法生成四選一題目！`);
             return;
         }
 
@@ -1270,9 +1257,9 @@
         answeredQuestionsCount = 0;
         quizQuestions = [];
 
-        // 混合打亂並隨機挑選最多20題
+        // 混合打亂並隨機挑選最多 10 題 (已修正為 10)
         const shuffledWords = [...allWords].sort(() => 0.5 - Math.random());
-        const totalQuestionsCount = Math.min(20, shuffledWords.length);
+        const totalQuestionsCount = Math.min(10, shuffledWords.length);
         const targetWords = shuffledWords.slice(0, totalQuestionsCount);
         
         document.getElementById('quiz-score').innerText = `得分：0 / ${totalQuestionsCount}`;
@@ -1283,6 +1270,8 @@
             const wrongChoices = shuffledWrong.slice(0, 3);
             const optionsPool = [target, ...wrongChoices].sort(() => 0.5 - Math.random());
             const correctAnswerIndex = optionsPool.findIndex(o => o.text === target.text);
+            
+            // 隨機決定題型：true 為看字選義，false 為看義選字
             const isQuestionTypeText = Math.random() > 0.5;
 
             let questionText = isQuestionTypeText 
@@ -1306,6 +1295,7 @@
         quizContainer.scrollIntoView({ behavior: 'smooth' });
     };
 
+    // 3. 渲染測驗 HTML 面板
     function renderLocalQuizHTML() {
         const container = document.getElementById('quiz-content');
         let html = "";
@@ -1334,6 +1324,7 @@
         container.innerHTML = html;
     }
 
+    // 4. 檢查學生的回答
     window.checkLocalAnswer = function(qIdx, selectedIdx) {
         const question = quizQuestions[qIdx];
         if (question.answered) return;
@@ -1372,15 +1363,13 @@
         }
     };
 
+    // 5. 顯示結算報告
     function showPositiveFeedback() {
         const feedbackBlock = document.getElementById('quiz-feedback-block');
         const percentage = correctCount / quizQuestions.length;
         
-        let emoji = "🌟";
-        let title = "測驗完成！";
-        let message = "";
-        let bgColor = "from-green-50 to-emerald-100 border-green-200";
-        let textColor = "text-green-800";
+        let emoji = "🌟"; let title = "測驗完成！"; let message = "";
+        let bgColor = "from-green-50 to-emerald-100 border-green-200"; let textColor = "text-green-800";
 
         if (percentage === 1) {
             emoji = "🏆"; title = "完美滿分！太厲害了！"; message = "你對這些字詞已經倒背如流了，繼續保持這個完美的狀態！";
