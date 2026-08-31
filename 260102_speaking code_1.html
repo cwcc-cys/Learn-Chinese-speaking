@@ -158,7 +158,9 @@
 
 
     // ▼▼▼ 資料設定區
-    const learningMaterial = {
+
+    // 現有詞彙庫（保持原本課本內容，不新增標題或課節）
+    const existingVocabBank = {
         1: { 
             title: "初中第一冊",
             lessons: [
@@ -275,9 +277,9 @@
                     { text: "興趣", jyutping: "hing3 ceoi3", meaningZH: "喜好的情緒或事物。", meaningEN: "Interest" },
                     { text: "畫畫", jyutping: "waak6 waa2", meaningZH: "繪製圖畫。", meaningEN: "To draw / To paint" },
                     { text: "笑話", jyutping: "siu3 waa2", meaningZH: "引人發笑的話語或故事。", meaningEN: "Joke" },
-                    { text: "唱歌", jyutping: "coeng3 go1", meaningZH: "唱出有旋律的聲音。", meaningEN: "To sing" },                                                      
+                    { text: "唱歌", jyutping: "coeng3 go1", meaningZH: "唱出有旋律的聲音。", meaningEN: "To sing" },
                     { text: "注意", jyutping: "zyu3 ji3", meaningZH: "把心思放在某事物上；留意。", meaningEN: "To pay attention / To notice" },
-                    { text: "長大", jyutping: "on1 cyun4", speakText: "槳大", meaningZH: "身高或年齡的增加。", meaningEN: "Grow up" },
+                    { text: "長大", jyutping: "zoeng2 dai4", speakText: "槳大", meaningZH: "身高或年齡的增加。", meaningEN: "Grow up" },
                     { text: "安全", jyutping: "on1 cyun4", meaningZH: "沒有危險，不受威脅。", meaningEN: "Safe / Safety" }] },
                 { id: 9, title: "第九課", words: [{ text: "好食", jyutping: "hou2 sik6" }] },
                 { id: 10, title: "第十課", words: [{ text: "香港", jyutping: "hoeng1 gong2" }] }
@@ -804,11 +806,102 @@
             ] 
         }
     };
+    const learningMaterial = existingVocabBank;
+
+    // 新增的獨立詞庫：採用與 NCS 相同的「冊別 → 課題」結構，方便未來增加新詞庫內容
+    const localVocabBank = {
+        1: {
+            title: "本地詞庫",
+            lessons: [
+                {
+                    id: 1,
+                    title: "第一課",
+                    words: [
+                        { text: "滄海一粟", jyutping: "cong1 hoi2 jat1 suk1", meaningZH: "大海中的一粒微小穀子，比喻非常渺小。", meaningEN: "A tiny speck in the vast sea" },
+                        { text: "舐犢情深", jyutping: "saai2 duk6 cing4 sam1", meaningZH: "比喻父母對子女極為深厚的愛意。", meaningEN: "Parental love" },
+                        { text: "井底之蛙", jyutping: "zing2 dai2 zi1 waa1", meaningZH: "比喻見識狹隘、眼界短淺的人。", meaningEN: "A frog at the bottom of a well" },
+                        { text: "相輔相成", jyutping: "soeng1 fu6 soeng1 sing4", meaningZH: "兩件事物互相輔助、互相配合，發揮更好的作用。", meaningEN: "Complement each other" },
+                        { text: "舉足輕重", jyutping: "geoi2 zuk1 hing1 zung6", meaningZH: "處於關鍵地位，一舉一動都能影響全局。", meaningEN: "Have great influence" },
+                        { text: "雋永", jyutping: "syun3 wing5", meaningZH: "言語、詩文或道理意味深長，值得反覆回味。", meaningEN: "Profound and lasting" },
+                        { text: "闡釋", jyutping: "cin2 sik1", meaningZH: "詳細地解釋與說明。", meaningEN: "Explain in detail" },
+                        { text: "締造", jyutping: "dai3 zou6", meaningZH: "建立、創立。", meaningEN: "Create and build" },
+                        { text: "契機", jyutping: "kai3 gei1", meaningZH: "事物轉變或發展的關鍵機會。", meaningEN: "Turning point / opportunity" },
+                        { text: "弊端", jyutping: "bai6 dyun1", meaningZH: "害處、缺點或漏洞。", meaningEN: "Drawback / evil consequence" },
+                        { text: "瑕疵", jyutping: "haa4 ci1", meaningZH: "微小的缺點或毛病。", meaningEN: "Defect / flaw" },
+                        { text: "砥礪", jyutping: "zi2 lai6", meaningZH: "磨鍊、勉勵。", meaningEN: "Temper and train" },
+                        { text: "無庸置疑", jyutping: "mou4 jung4 zi3 ji4", meaningZH: "完全不必懷疑。", meaningEN: "Beyond doubt" },
+                        { text: "遞進", jyutping: "dai6 zeon3", meaningZH: "一層一層地推進或深入。", meaningEN: "Progress step by step" },
+                        { text: "根深蒂固", jyutping: "gan1 sam1 dai3 gu3", meaningZH: "基礎穩固，難以動搖。", meaningEN: "Deep-rooted" },
+                        { text: "取長補短", jyutping: "ceoi2 coeng4 bou2 dyun2", meaningZH: "吸取長處，彌補短處。", meaningEN: "Learn from strengths and compensate for weaknesses" },
+                        { text: "傲慢", jyutping: "ngou6 maan6", meaningZH: "看不起別人，態度高傲無禮。", meaningEN: "Arrogant" },
+                        { text: "瞻仰", jyutping: "zim1 joeng5", meaningZH: "恭敬地抬頭觀看。", meaningEN: "Admire / look up to" },
+                        { text: "汲取", jyutping: "kap1 ceoi2", meaningZH: "吸取、獲取。", meaningEN: "Draw from / absorb" },
+                        { text: "孤僻", jyutping: "gu1 pik1", meaningZH: "性格怪異孤單，不喜歡與人往來。", meaningEN: "Introverted and unsociable" }
+                    ]
+                },
+                {
+                    id: 2,
+                    title: "第二課",
+                    words: [
+                        { text: "佇立", jyutping: "zyu6 laap6", meaningZH: "長時間站立。", meaningEN: "Stand still" },
+                        { text: "凝視", jyutping: "jing4 si6", meaningZH: "目不轉睛地看。", meaningEN: "Gaze fixedly" },
+                        { text: "徘徊", jyutping: "pui4 wui4", meaningZH: "來回走動，猶豫不決。", meaningEN: "Wander / hesitate" },
+                        { text: "穿梭", jyutping: "cyun1 so1", meaningZH: "往來頻繁。", meaningEN: "Move back and forth" },
+                        { text: "踉蹌", jyutping: "loeng6 coeng3", meaningZH: "走路不穩、搖晃。", meaningEN: "Stagger" },
+                        { text: "掠過", jyutping: "loek6 gwo3", meaningZH: "輕快地拂過或飛過。", meaningEN: "Brush past / skim over" },
+                        { text: "籠罩", jyutping: "lung5 zaau3", meaningZH: "像罩子一樣覆蓋。", meaningEN: "Shroud / envelop" },
+                        { text: "彌漫", jyutping: "mei4 maan6", meaningZH: "布滿、充滿。", meaningEN: "Permeate / spread throughout" },
+                        { text: "沉浸", jyutping: "cam4 zam3", meaningZH: "完全沉溺在某種境界中。", meaningEN: "Be immersed in" },
+                        { text: "馳騁", jyutping: "ci4 cing2", meaningZH: "奔跑、自由發揮。", meaningEN: "Gallop / roam freely" },
+                        { text: "璀璨", jyutping: "ceoi1 caan3", meaningZH: "光彩奪目、鮮明耀眼。", meaningEN: "Brilliant / dazzling" },
+                        { text: "斑斕", jyutping: "baan1 laan4", meaningZH: "色彩燦爛豐富。", meaningEN: "Vivid and colorful" },
+                        { text: "盎然", jyutping: "ngong3 jin4", meaningZH: "生機勃勃。", meaningEN: "Full of life" },
+                        { text: "喧囂", jyutping: "hyun1 hiu1", meaningZH: "雜亂吵鬧。", meaningEN: "Noisy / bustling" },
+                        { text: "寧謐", jyutping: "ning4 mat6", meaningZH: "安靜、平靜。", meaningEN: "Quiet / tranquil" },
+                        { text: "朦朧", jyutping: "mung4 lung4", meaningZH: "模糊不清。", meaningEN: "Hazy / dim" },
+                        { text: "蒼翠", jyutping: "cong1 ceoi3", meaningZH: "草木深綠色，生機勃勃。", meaningEN: "Lush green" },
+                        { text: "清冽", jyutping: "cing1 lit6", meaningZH: "澄清而寒冷。", meaningEN: "Fresh and cool" },
+                        { text: "蕭條", jyutping: "siu1 tiu4", meaningZH: "寂寞冷清、毫無生氣。", meaningEN: "Desolate" },
+                        { text: "蔥鬱", jyutping: "cung1 wat1", meaningZH: "樹木青翠茂盛。", meaningEN: "Luxuriant and verdant" }
+                    ]
+                },
+                {
+                    id: 3,
+                    title: "第三課",
+                    words: [
+                        { text: "惆悵", jyutping: "cau4 coeng3", meaningZH: "因失意、遺憾而感傷。", meaningEN: "Melancholy" },
+                        { text: "徬徨", jyutping: "pong4 wong4", meaningZH: "猶豫不決，不知該做什麼。", meaningEN: "At a loss / hesitant" },
+                        { text: "欣慰", jyutping: "jan1 wai3", meaningZH: "心裏感到歡喜而安慰。", meaningEN: "Pleased and reassured" },
+                        { text: "忐忑", jyutping: "taan2 tik1", meaningZH: "心神不安、十分緊張。", meaningEN: "Anxious / uneasy" },
+                        { text: "委屈", jyutping: "wai2 wat1", meaningZH: "受到不公正對待而心裡難過。", meaningEN: "Wronged / aggrieved" },
+                        { text: "震撼", jyutping: "zam3 ham3", meaningZH: "心靈受到強烈震動。", meaningEN: "Shock / move deeply" },
+                        { text: "欣喜若狂", jyutping: "jan1 hei2 joek6 kwong4", meaningZH: "高興得像發狂一樣。", meaningEN: "Overjoyed" },
+                        { text: "提心吊膽", jyutping: "tai4 sam1 diu3 daam2", meaningZH: "形容心裏十分擔心和害怕。", meaningEN: "Be extremely nervous" },
+                        { text: "百感交集", jyutping: "baak3 gam2 gaau1 zaap6", meaningZH: "各種情感交織在一起。", meaningEN: "A mix of emotions" },
+                        { text: "潸然淚下", jyutping: "saan1 jin4 leoi6 haa6", meaningZH: "眼淚流下來。", meaningEN: "Tear up" },
+                        { text: "飽經風霜", jyutping: "baau2 ging1 fung1 soeng1", meaningZH: "經歷過多年艱苦。", meaningEN: "Seasoned by hardship" },
+                        { text: "精神抖擻", jyutping: "zing1 san4 dau2 sau2", meaningZH: "精神振作，活力充沛。", meaningEN: "Full of energy" },
+                        { text: "和藹可親", jyutping: "wo4 oi2 ho2 can1", meaningZH: "態度溫和親切。", meaningEN: "Warm and amiable" },
+                        { text: "眉清目秀", jyutping: "mei4 cing1 muk6 sau3", meaningZH: "形容容貌清秀俊美。", meaningEN: "Sharp-featured and handsome" },
+                        { text: "謙遜", jyutping: "him1 seon3", meaningZH: "謙虛恭敬，不傲慢。", meaningEN: "Modest" },
+                        { text: "堅韌", jyutping: "gin1 jan6", meaningZH: "意志堅強，不怕挫折。", meaningEN: "Tenacious" },
+                        { text: "恪守", jyutping: "gok3 sau2", meaningZH: "嚴格遵守。", meaningEN: "Observe strictly / adhere to" },
+                        { text: "秉持", jyutping: "bing2 ci4", meaningZH: "堅持、保持。", meaningEN: "Hold to / uphold" },
+                        { text: "蛻變", jyutping: "teoi3 bin3", meaningZH: "比喻發生顯著轉變。", meaningEN: "Transform" },
+                        { text: "警惕", jyutping: "ging2 tik1", meaningZH: "對危險或錯誤保持警覺。", meaningEN: "Stay vigilant" }
+                    ]
+                }
+            ]
+        }
+    };
+    const newVocabBank = localVocabBank;
+    window.newVocabBank = newVocabBank;
     
     // --- 核心變數 ---
     let currentView = 'home';
     let selectedBook = null;
     let selectedLesson = null;
+    let selectedBankType = 'ncs';
     const contentDiv = document.getElementById('content');
     const headerTitle = document.getElementById('header-title');
     const breadcrumbBook = document.getElementById('breadcrumb-book');
@@ -1003,17 +1096,65 @@
     canvas.addEventListener('touchend', endDraw);
 
     function renderHome() {
-        currentView = 'home'; selectedBook = null; selectedLesson = null;
+        currentView = 'home'; selectedBook = null; selectedLesson = null; selectedBankType = 'ncs';
         headerTitle.textContent = "粵語詞彙學習系統";
         breadcrumbBook.classList.add('hidden'); breadcrumbLesson.classList.add('hidden');
+
+        const html = `
+            <div class="mb-6 text-center text-gray-600 text-sm">請選擇詞庫</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <button onclick="selectBank('ncs')" class="p-6 bg-blue-500 text-white font-semibold text-lg rounded-xl shadow-md hover:bg-blue-600 transition duration-150 transform hover:scale-105 text-left">
+                    <div class="text-2xl font-bold">NCS student</div>
+                    <div class="mt-2 text-sm text-blue-100">原有課本詞彙</div>
+                </button>
+                <button onclick="selectBank('local')" class="p-6 bg-emerald-500 text-white font-semibold text-lg rounded-xl shadow-md hover:bg-emerald-600 transition duration-150 transform hover:scale-105 text-left">
+                    <div class="text-2xl font-bold">Local student</div>
+                    <div class="mt-2 text-sm text-emerald-100">新詞庫</div>
+                </button>
+            </div>
+        `;
+        contentDiv.innerHTML = html;
+    }
+
+    function renderNcsBank() {
+        window.learningMaterial = existingVocabBank;
+        selectedBook = null;
+        selectedLesson = null;
+        headerTitle.textContent = "NCS student - 選擇冊別";
+        breadcrumbBook.classList.add('hidden'); breadcrumbLesson.classList.add('hidden');
+
         let html = '<div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
-        Object.keys(learningMaterial).forEach(bookId => {
-            html += `<button onclick="selectBook(${bookId})" class="p-6 bg-blue-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-blue-600 transition duration-150 transform hover:scale-105">${learningMaterial[bookId].title}</button>`;
+        Object.keys(existingVocabBank).forEach(bookId => {
+            const book = existingVocabBank[bookId];
+            html += `<button onclick="selectBook(${bookId})" class="p-6 bg-blue-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-blue-600 transition duration-150 transform hover:scale-105">${book.title}</button>`;
         });
         html += '</div>'; contentDiv.innerHTML = html;
     }
+
+    function renderLocalBank() {
+        selectedBankType = 'local';
+        window.learningMaterial = localVocabBank;
+        selectedBook = null;
+        selectedLesson = null;
+        headerTitle.textContent = "Local student - 選擇冊別";
+        breadcrumbBook.classList.add('hidden'); breadcrumbLesson.classList.add('hidden');
+
+        let html = '<div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+        Object.keys(localVocabBank).forEach(bookId => {
+            const book = localVocabBank[bookId];
+            html += `<button onclick="selectBook(${bookId})" class="p-6 bg-emerald-500 text-white font-semibold text-lg rounded-lg shadow-md hover:bg-emerald-600 transition duration-150 transform hover:scale-105">${book.title}</button>`;
+        });
+        html += '</div>'; contentDiv.innerHTML = html;
+    }
+
     function renderBook() {
+        selectedBankType = 'ncs';
+        window.learningMaterial = existingVocabBank;
         const book = learningMaterial[selectedBook];
+        if (!book) {
+            renderNcsBank();
+            return;
+        }
         headerTitle.textContent = `${book.title} - 選擇課堂`;
         breadcrumbBook.querySelector('span').textContent = book.title;
         breadcrumbBook.classList.remove('hidden'); breadcrumbLesson.classList.add('hidden');
@@ -1035,8 +1176,16 @@
         });
         html += '</div>'; contentDiv.innerHTML = html;
     }
+    function selectBank(bankType) {
+        if (bankType === 'local') {
+            renderLocalBank();
+            return;
+        }
+        renderNcsBank();
+    }
     window.selectBook = (id) => { selectedBook = id; renderBook(); };
     window.selectLesson = (id) => { selectedLesson = id; renderLesson(); };
+    window.selectBank = selectBank;
     window.renderHome = renderHome; window.renderBook = renderBook;
     window.selectChar = selectChar; window.nextChar = nextChar; 
     window.learningMaterial = learningMaterial;
