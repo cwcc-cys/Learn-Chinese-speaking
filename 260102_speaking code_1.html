@@ -11,8 +11,11 @@
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
 
     <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #f4f7f9; }
-        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f4f7f9;
+        }
+
         .writing-container {
             width: 340px; 
             height: 340px; 
@@ -26,15 +29,26 @@
         }
 
         .char-tab {
-            width: 45px; height: 45px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px; font-weight: bold;
-            border-radius: 8px; cursor: pointer; transition: all 0.2s;
-            border: 2px solid #e5e7eb; background-color: white; color: #374151;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid #e5e7eb;
+            background-color: white;
+            color: #374151;
         }
+
         .char-tab.active {
-            background-color: #3b82f6; color: white;
-            border-color: #2563eb; transform: scale(1.1);
+            background-color: #3b82f6;
+            color: white;
+            border-color: #2563eb;
+            transform: scale(1.1);
         }
 
         #score-display {
@@ -44,9 +58,9 @@
             min-height: 28px;
             font-size: 1.1rem;
         }
-        .score-good { color: #10b981; } 
+        .score-good { color: #10b981; }
         .score-ok { color: #f59e0b; }
-        .score-bad { color: #ef4444; } 
+        .score-bad { color: #ef4444; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4">
@@ -54,17 +68,17 @@
     <div id="app" class="w-full max-w-4xl bg-white shadow-2xl rounded-xl p-6 md:p-10 relative z-10">
         <h1 id="header-title" class="text-3xl font-bold text-gray-800 text-center mb-6">粵語詞彙發音系統</h1>
         
-<div id="breadcrumb" class="text-sm text-gray-500 mb-6 flex space-x-2 items-center">
+    <div id="breadcrumb" class="text-sm text-gray-500 mb-6 flex space-x-2 items-center">
             <span class="cursor-pointer hover:text-blue-600 transition duration-150" onclick="renderHome()">主頁</span>
             <span id="breadcrumb-book" class="hidden">/ <span class="font-medium text-gray-600 transition duration-150"></span></span>
             <span id="breadcrumb-lesson" class="hidden">/ <span class="font-medium text-gray-800 transition duration-150"></span></span>
-        </div>
+            </div>
 
-<div class="mb-6">
+            <div class="mb-6">
             <button onclick="openQuizSetup()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl shadow-md font-bold text-sm transition-all transform active:scale-95 flex items-center gap-2">
                 ⚙️ 自訂範圍並生成測驗
             </button>
-        </div>
+            </div>
 
         <div id="quiz-setup-container" class="hidden mb-6 p-6 bg-white border border-indigo-200 rounded-2xl shadow-sm">
             <h2 class="text-xl font-bold text-indigo-900 mb-4 flex items-center gap-2">📚 請選擇你要溫習的課目</h2>
@@ -185,12 +199,24 @@
                     { text: "搬家", jyutping: "bun1 gaa1", meaningZH: "遷移住所，搬往新家。", meaningEN: "Moving house" },
                     { text: "一幢", jyutping: "jat1 zong6", meaningZH: "量詞，用於建築物。", meaningEN: "A block (building)" },
                     { text: "大廈", jyutping: "daai6 haa6", meaningZH: "高大的樓房建築。", meaningEN: "Building; Mansion" },
+                    { text: "周末", jyutping: "zau1 mut6", meaningZH: "星期六和星期日。", meaningEN: "Weekend" },
+                    { text: "睡房", jyutping: "seoi6 fong2", meaningZH: "供人睡覺的房間。", meaningEN: "Bedroom" },
+                    { text: "客廳", jyutping: "haak3 teng1", meaningZH: "住宅中接待客人的房間。", meaningEN: "Living room" },
+                    { text: "廚房", jyutping: "cyu4 fong2", meaningZH: "烹飪食物的房間。", meaningEN: "Kitchen" },
+                    { text: "廁所", jyutping: "ci3 so2", meaningZH: "供人如廁的場所。", meaningEN: "Toilet / Bathroom" },
                 ] },
                 { id: 2, title: "第二課〈我的房間〉", words: [ 
-                    { text: "一", jyutping: "jat1" }, { text: "二", jyutping: "ji6" }, { text: "三", jyutping: "saam1" }, 
-                    { text: "四", jyutping: "sei3" }, { text: "五", jyutping: "ng5" }, { text: "六", jyutping: "luk6" }, 
-                    { text: "七", jyutping: "cat1" }, { text: "八", jyutping: "baat3" }, { text: "九", jyutping: "gau2" }, 
-                    { text: "十", jyutping: "sap6" }
+                    { text: "亂", jyutping: "lyun6", meaningZH: "雜亂無序。", meaningEN: "Messy / Disorderly" },
+                    { text: "書包", jyutping: "syu1 baau1", meaningZH: "用來裝書本的包。", meaningEN: "School bag / Backpack" },
+                    { text: "運動鞋", jyutping: "wan6 dung6 haai4", meaningZH: "適合運動時穿的鞋子。", meaningEN: "Sports shoes / Sneakers" },
+                    { text: "衣櫃", jyutping: "ji1 gwai6", meaningZH: "用來放置衣物的櫃子。", meaningEN: "Wardrobe / Closet" },
+                    { text: "書枱", jyutping: "syu1 toi2", meaningZH: "用來讀書、寫字的桌子。", meaningEN: "Desk" },
+                    { text: "書櫃", jyutping: "syu1 gwai3", meaningZH: "用來放置書籍的架子。", meaningEN: "Bookshelf" },
+                    { text: "圍巾", jyutping: "wai4 gan1", meaningZH: "圍在脖子上的布料。", meaningEN: "Scarf" },
+                    { text: "牛仔褲", jyutping: "ngau2 zi2 hou3", meaningZH: "用牛仔布製成的褲子。", meaningEN: "Jeans" },
+                    { text: "襪", jyutping: "mok6", meaningZH: "穿在腳上的服裝。", meaningEN: "Socks" },
+                    { text: "手套", jyutping: "hou3 taai3", meaningZH: "保護手部的服裝。", meaningEN: "Gloves" },
+
                 ] },
                 { id: 3, title: "第三課〈我的一日三餐〉", words: [
                     { text: "一日三餐", jyutping: "jat1 jat6 saam1 caan1", meaningZH: "每天早、午、晚三頓飯。", meaningEN: "Three meals a day" },
@@ -282,8 +308,7 @@
                     { text: "注意", jyutping: "zyu3 ji3", meaningZH: "把心思放在某事物上；留意。", meaningEN: "To pay attention / To notice" },
                     { text: "長大", jyutping: "zoeng2 dai4", speakText: "槳大", meaningZH: "身高或年齡的增加。", meaningEN: "Grow up" },
                     { text: "安全", jyutping: "on1 cyun4", meaningZH: "沒有危險，不受威脅。", meaningEN: "Safe / Safety" }] },
-                { id: 9, title: "第九課", words: [{ text: "好食", jyutping: "hou2 sik6" }] },
-                { id: 10, title: "第十課", words: [{ text: "香港", jyutping: "hoeng1 gong2" }] }
+
             ]
         },
         3: { 
@@ -300,6 +325,21 @@
                     { text: "傳統", jyutping: "cyun4 tung2", meaningZH: "世代相傳的習俗或思想。", meaningEN: "Tradition / Traditional" },
                     { text: "一邊", jyutping: "jat1 bin1", meaningZH: "表示同時進行兩個動作。", meaningEN: "Simultaneously / While" },
                     { text: "賞月", jyutping: "soeng2 jyut6", meaningZH: "欣賞美麗的月亮。", meaningEN: "Moon gazing / To admire the moon" } ] },
+
+                { id: 1, title: "第八課〈過中秋節〉", words: [
+                    { text: "體育館", jyutping: "tai2 juk6 gun2", meaningZH: "進行體育活動的場所。", meaningEN: "Gymnasium" },
+                    { text: "還書", jyutping: "wan4 syu1", meaningZH: "歸還借閱的書籍。", meaningEN: "To return books" },
+                    { text: "豐富", jyutping: "fung1 fu3", meaningZH: "數量多、種類全。", meaningEN: "Rich / Abundant" },
+                    { text: "合格", jyutping: "hap1 gaak3", meaningZH: "達到標準或要求。", meaningEN: "Qualified / Meet the requirements" },
+                    { text: "流行", jyutping: "lau4 hang2", meaningZH: "廣為人知、受歡迎。", meaningEN: "Popular / Trendy" },
+                    { text: "借書", jyutping: "ze3 syu1", meaningZH: "從圖書館借閱書籍。", meaningEN: "To borrow books" },
+                    { text: "考試", jyutping: "haau2 si3", meaningZH: "對知識或技能的測驗。", meaningEN: "Exam" },
+                    { text: "介紹", jyutping: "gaai3 siu6", meaningZH: "向他人說明或展示某事物。", meaningEN: "Introduction" },
+                    { text: "後門", jyutping: "hau6 mun4", meaningZH: "房屋或建築物的後面入口。", meaningEN: "Back door" },
+                    { text: "聊天", jyutping: "liu4 tin1", meaningZH: "閒聊、談話。", meaningEN: "Chat" },
+                    { text: "提供", jyutping: "tai4 gong1", meaningZH: "給予、供應。", meaningEN: "To provide" },
+                    { text: "設施", jyutping: "cit3 si1", meaningZH: "設置的設備或條件。", meaningEN: "Facilities" }
+        ] },
 
             ]
         },
@@ -959,11 +999,37 @@
                         {text: "聳立", jyutping: "sung2 laap6"},
                         {text: "茂盛", jyutping: "mau6 sing6"},
                         {text: "糾正", jyutping: "gau2 zing3"},
-                        {text: "縫隙", jyutping: "fung6 kwik1"},
-                        {text: "顫動", jyutping: "zin3 dung6"},
-                        {text: "展覽", jyutping: "zin2 laam5"},
+                        {text: "縫隙", jyutping: "fung6 kwik3"},
+                        {text: "顫動", jyutping: "zin2 dung6"},
+                        {text: "展覽", jyutping: "zin3 laam5"},
                         {text: "興奮", jyutping: "hing1 fan5"},
                         {text: "應接不暇", jyutping: "jing3 zip1 bat4 haa6"}
+                    ]
+                },
+
+                { id: 2,
+                    title: "中一〈一件小事〉",
+                    words: [
+                        { text: "鄉下", jyutping: "hoeng1 haa2", meaningZH: "鄉村，相對於城市的地方。"},
+                        { text: "一轉眼", jyutping: "jat1 zyun2 ngaan5", meaningZH: "形容極短的時間。"},
+                        { text: "耳聞目睹", jyutping: "ji5 man4 muk6 dou2", meaningZH: "親耳聽到，親眼看見。"},
+                        { text: "痕跡", jyutping: "han4 zik1", meaningZH: "事物留下的印記或跡象。"},
+                        { text: "脾氣", jyutping: "pei4 hei3", meaningZH: "人的性格或容易發怒的性情。"},
+                        { text: "浮塵", jyutping: "fau4 can1", meaningZH: "空中飄浮的灰塵。"},
+                        { text: "破爛", jyutping: "po3 laan6", meaningZH: "破舊殘碎，或破舊不值錢的東西。"},
+                        { text: "料定", jyutping: "liu6 ding6", meaningZH: "預先斷定或料想。"},
+                        { text: "攙着", jyutping: "caam1 zoek6", meaningZH: "用手扶着。"},
+                        { text: "臂膀", jyutping: "bei3 bong2", meaningZH: "胳膊，肩膀。"},
+                        { text: "憎惡", jyutping: "zeng1 wu3", meaningZH: "討厭、憎恨、厭惡。"},
+                        { text: "自討苦吃", jyutping: "zi6 tou2 fu2 hek3", meaningZH: "自己招攬苦難或麻煩。"},
+                        { text: "躊躇", jyutping: "cau4 cyu4", meaningZH: "猶豫不決，遲疑。"},
+                        { text: "詫異", jyutping: "caa3 ji6", meaningZH: "感到驚奇、奇怪。"},
+                        { text: "剎時", jyutping: "caat3 si4", meaningZH: "極短的時間，一下子。"},
+                        { text: "仰視", jyutping: "joeng5 si6", meaningZH: "抬頭向上看。"},
+                        { text: "凝滯", jyutping: "jing4 zai6", meaningZH: "停留不流動，或思維緩慢。"},
+                        { text: "姑且", jyutping: "gu1 ce2", meaningZH: "暫且，暫時。"},
+                        { text: "慚愧", jyutping: "caam4 kwai3", meaningZH: "因有缺點、錯誤或未能盡責而感到不安。"},
+                        { text: "自新", jyutping: "zi6 san1", meaningZH: "改過自新，重新做人。"}
                     ]
                 }
             ]
