@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>粵語詞彙自學工具</title>
+    <title>粵語詞彙自學工具 · 中二溫習遊戲</title>
     <meta name="referrer" content="no-referrer">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -61,6 +61,42 @@
         .score-good { color: #10b981; }
         .score-ok { color: #f59e0b; }
         .score-bad { color: #ef4444; }
+
+        /* Form 2 NCS mini-games */
+        .f2-arcade {
+            background: linear-gradient(180deg, #1e3a8a 0%, #312e81 45%, #4c1d95 100%);
+            border: 4px solid #fbbf24;
+            border-radius: 16px;
+            box-shadow: 0 0 0 4px #1e293b, 0 12px 28px rgba(0,0,0,.3);
+            color: #fff;
+            padding: 1.25rem;
+        }
+        .f2-chunky {
+            border: 3px solid #0f172a;
+            border-radius: 12px;
+            box-shadow: 0 4px 0 #0f172a;
+            font-weight: 800;
+            transition: transform .08s, box-shadow .08s;
+            cursor: pointer;
+        }
+        .f2-chunky:active { transform: translateY(3px); box-shadow: 0 1px 0 #0f172a; }
+        .f2-chunky:disabled { opacity: .45; cursor: default; transform: none; box-shadow: 0 4px 0 #0f172a; }
+        .f2-card-flip { min-height: 200px; cursor: pointer; }
+        .f2-card-inner { position: relative; width: 100%; min-height: 200px; transition: transform .45s; transform-style: preserve-3d; }
+        .f2-card-flip.is-flipped .f2-card-inner { transform: rotateY(180deg); }
+        .f2-card-face {
+            position: absolute; inset: 0; backface-visibility: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border-radius: 14px; border: 3px solid #0f172a; padding: 1rem; text-align: center;
+        }
+        .f2-card-front { background: #fef08a; color: #1e293b; }
+        .f2-card-back { background: #a5f3fc; color: #0f172a; transform: rotateY(180deg); }
+        .f2-mem { min-height: 84px; border: 3px solid #0f172a; border-radius: 10px; font-weight: 800; background: #6366f1; color: #fff; cursor: pointer; }
+        .f2-mem.open { background: #fef3c7; color: #1e293b; }
+        .f2-mem.matched { background: #86efac; color: #14532d; }
+        .f2-pixel-bar { height: 14px; background: #1e293b; border-radius: 999px; overflow: hidden; border: 2px solid #fbbf24; }
+        .f2-pixel-bar > span { display:block; height:100%; background: repeating-linear-gradient(90deg,#22c55e 0 8px,#16a34a 8px 10px); }
+
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center p-4">
@@ -75,35 +111,56 @@
             </div>
 
             <div class="mb-6">
-            <button onclick="openQuizSetup()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl shadow-md font-bold text-sm transition-all transform active:scale-95 flex items-center gap-2">
-                ⚙️ 自訂範圍並生成測驗
+            <button type="button" onclick="openGameOptions()" class="bg-fuchsia-600 hover:bg-fuchsia-700 text-white px-5 py-2.5 rounded-xl shadow-md font-bold text-sm transition-all transform active:scale-95 flex items-center gap-2">
+                🎮 自學遊戲選項（自選範圍）
             </button>
             </div>
 
-        <div id="quiz-setup-container" class="hidden mb-6 p-6 bg-white border border-indigo-200 rounded-2xl shadow-sm">
-            <h2 class="text-xl font-bold text-indigo-900 mb-4 flex items-center gap-2">📚 請選擇你要溫習的課目</h2>
-            <p class="text-sm text-gray-500 mb-4">您可以同時勾選多個課目，系統將從您選擇的範圍內隨機抽取 20 題。</p>
-            
-            <div id="quiz-scope-list" class="space-y-4 mb-6 max-h-64 overflow-y-auto p-4 border border-gray-100 rounded-xl bg-gray-50">
+        <div id="game-options-container" class="hidden mb-6 p-6 bg-white border border-fuchsia-200 rounded-2xl shadow-sm">
+            <h2 class="text-xl font-bold text-fuchsia-900 mb-2 flex items-center gap-2">🎮 中二溫習遊戲 · 選擇範圍</h2>
+            <p class="text-sm text-gray-500 mb-4">先揀溫習範圍，再揀遊戲。內容來自〈我的學校〉、〈過中秋節〉同第一次小測。</p>
+
+            <div class="mb-4">
+                <div class="text-sm font-bold text-gray-700 mb-2">① 溫習範圍 Scope</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2" id="game-scope-list">
+                    <label class="flex items-center gap-2 p-3 rounded-xl border border-gray-200 hover:bg-fuchsia-50 cursor-pointer">
+                        <input type="radio" name="f2scope" value="all" checked class="accent-fuchsia-600">
+                        <span><b>全部</b> <span class="text-xs text-gray-500">學校 + 中秋 + 小測</span></span>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 rounded-xl border border-gray-200 hover:bg-fuchsia-50 cursor-pointer">
+                        <input type="radio" name="f2scope" value="school" class="accent-fuchsia-600">
+                        <span><b>單元一〈我的學校〉</b></span>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 rounded-xl border border-gray-200 hover:bg-fuchsia-50 cursor-pointer">
+                        <input type="radio" name="f2scope" value="moon" class="accent-fuchsia-600">
+                        <span><b>單元三〈過中秋節〉</b></span>
+                    </label>
+                    <label class="flex items-center gap-2 p-3 rounded-xl border border-gray-200 hover:bg-fuchsia-50 cursor-pointer">
+                        <input type="radio" name="f2scope" value="quiz" class="accent-fuchsia-600">
+                        <span><b>第一次小測</b> <span class="text-xs text-gray-500">量詞／字詞</span></span>
+                    </label>
                 </div>
-            
-            <div class="flex gap-3">
-                <button onclick="startCustomQuiz()" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2.5 rounded-lg font-bold shadow transition-all flex items-center gap-2">
-                    🚀 開始測驗
-                </button>
-                <button onclick="document.getElementById('quiz-setup-container').classList.add('hidden')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2.5 rounded-lg font-bold transition-all">
-                    取消
-                </button>
             </div>
+
+            <div class="mb-4">
+                <div class="text-sm font-bold text-gray-700 mb-2">② 選擇遊戲 Game</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <button type="button" onclick="startScopedGame('flip')" class="f2-chunky bg-yellow-300 text-slate-900 p-3 text-left">🃏 字卡翻卡</button>
+                    <button type="button" onclick="startScopedGame('memory')" class="f2-chunky bg-cyan-300 text-slate-900 p-3 text-left">🧠 記憶配對</button>
+                    <button type="button" onclick="startScopedGame('measure')" class="f2-chunky bg-lime-300 text-slate-900 p-3 text-left">🔢 量詞點選</button>
+                    <button type="button" onclick="startScopedGame('arena')" class="f2-chunky bg-pink-300 text-slate-900 p-3 text-left">🏫🌕 校園·中秋擂台</button>
+                </div>
+            </div>
+
+            <button type="button" onclick="document.getElementById('game-options-container').classList.add('hidden')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2.5 rounded-lg font-bold transition-all">
+                關閉
+            </button>
         </div>
 
-        <div id="quiz-container" class="hidden mb-6 p-6 bg-indigo-50 border border-indigo-100 rounded-2xl shadow-sm">
-            <div class="flex justify-between items-center mb-4 border-b border-indigo-200 pb-3">
-                <h2 class="text-2xl font-bold text-indigo-900 flex items-center gap-2">📝 詞彙隨機挑戰賽</h2>
-                <span id="quiz-score" class="bg-indigo-200 text-indigo-800 font-bold px-3 py-1 rounded-full text-sm">得分：0 / 20</span>
-            </div>
-            <div id="quiz-content" class="space-y-6"></div>
-        </div>
+        <div id="quiz-setup-container" class="hidden"></div>
+        <div id="quiz-container" class="hidden"></div>
+        <div id="quiz-content" class="hidden"></div>
+        <span id="quiz-score" class="hidden"></span>
 
         <div id="browser-tts-info" class="p-3 bg-blue-100 text-blue-700 rounded-lg border border-blue-400 mt-2 mb-6 text-sm">
             📢 <b>Google 語音</b>已啟用。點擊「寫字」可進行<b>形狀相似度</b>練習 (評分已優化)。
@@ -167,7 +224,7 @@
         </div>
     </div>
 
-<script type="module">
+<script>
     const speechSpeed = 0.9; 
 
 
@@ -1333,11 +1390,12 @@
     window.learningMaterial = learningMaterial;
     window.checkSimilarity = checkSimilarity; window.animateChar = animateChar;
     window.openDefinitionModal = openDefinitionModal; window.showEnglishDefinition = showEnglishDefinition; window.closeDefinitionModal = closeDefinitionModal;
-    window.onload = renderHome;
-
-    javascript
-
-
+    window.renderHome = renderHome;
+    window.selectBank = selectBank;
+    function bootApp(){ try { renderHome(); } catch(e){ console.error(e); } }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootApp);
+    else bootApp();
+    window.onload = bootApp;
 </script>
 <script>
     let quizQuestions = [];
@@ -1693,6 +1751,298 @@
         feedbackBlock.classList.remove('hidden');
         setTimeout(() => feedbackBlock.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
     }
+
+
+    /* ===== Replace quiz with scoped F2 games (classic script, window handlers) ===== */
+    window.openQuizSetup = function(){ openGameOptions(); };
+    window.startCustomQuiz = function(){ openGameOptions(); };
+
+    const F2_DATA = {
+        flip: [
+            { front:"提供", back:"to provide / give", tip:"小賣部為我們______很多食物", unit:"school" },
+            { front:"流行", back:"popular / trendy", tip:"韓國的______音樂", unit:"school" },
+            { front:"介紹", back:"to introduce", tip:"______一部好看的電影", unit:"school" },
+            { front:"借書", back:"borrow books", tip:"到圖書館______", unit:"school" },
+            { front:"設施", back:"facilities", tip:"學校新建了一些______", unit:"school" },
+            { front:"合格", back:"pass / meet the standard", tip:"測驗終於______了", unit:"school" },
+            { front:"聊天", back:"chat", tip:"在小賣部______", unit:"school" },
+            { front:"教學樓", back:"teaching building", tip:"五幢______", unit:"school" },
+            { front:"體育館", back:"gymnasium", tip:"一座______", unit:"school" },
+            { front:"圖書館", back:"library", tip:"借書、還書", unit:"school" },
+            { front:"小賣部", back:"tuck shop", tip:"正門右邊", unit:"school" },
+            { front:"停車場", back:"car park", tip:"後門旁邊", unit:"school" },
+            { front:"自助餐廳", back:"buffet restaurant", tip:"新開的______", unit:"moon" },
+            { front:"足球訓練", back:"football training", tip:"下午有______", unit:"moon" },
+            { front:"餓得不得了", back:"extremely hungry", tip:"吃晚飯時______", unit:"moon" },
+            { front:"一口氣", back:"in one go", tip:"______吃了很多菜", unit:"moon" },
+            { front:"月餅", back:"mooncake", tip:"中秋傳統食品", unit:"moon" },
+            { front:"賞月", back:"admire the moon", tip:"一邊吃月餅一邊______", unit:"moon" },
+            { front:"品嘗", back:"to taste / savour", tip:"______甜品", unit:"moon" },
+            { front:"通常", back:"usually", tip:"一家人______去餐廳", unit:"moon" },
+            { front:"課程", back:"course / curriculum", tip:"提供不同的______", unit:"quiz" },
+            { front:"溫習", back:"revise", tip:"到圖書館______", unit:"quiz" },
+            { front:"舒服", back:"comfortable / well", tip:"很不______", unit:"quiz" },
+            { front:"醫院", back:"hospital", tip:"送我到______", unit:"quiz" }
+        ],
+        measure: [
+            { s:"我坐上了一______巴士到旺角看醫生。", opts:["次","位","間","輛","種"], a:"輛", unit:"quiz" },
+            { s:"雖然這一______診所不在我家旁邊……", opts:["次","位","間","輛","種"], a:"間", unit:"quiz" },
+            { s:"但這一______醫生在那附近很有名氣。", opts:["次","位","間","輛","種"], a:"位", unit:"quiz" },
+            { s:"醫生給了我數______不同的藥。", opts:["次","位","間","輛","種"], a:"種", unit:"quiz" },
+            { s:"吩咐我每日都要吃四______藥。", opts:["次","位","間","輛","種"], a:"次", unit:"quiz" },
+            { s:"學校有五______教學樓。", opts:["座","幢","間","位","輛"], a:"幢", unit:"school" },
+            { s:"校園有一______體育館。", opts:["座","幢","輛","次","種"], a:"座", unit:"school" },
+            { s:"停車場可以停五十______車。", opts:["位","間","輛","種","次"], a:"輛", unit:"school" }
+        ],
+        arena: [
+            { p:"「我」在哪一間學校上學？", c:["上海國際中學","英國國際學校","香城中學","明愛胡振中書院"], a:0, e:"課文：上海國際中學。", unit:"school" },
+            { p:"學校有幾幢教學樓、幾座體育館？", c:["1 幢、5 座","5 幢、1 座","2 幢、5 座","4 幢、1 座"], a:1, e:"五幢教學樓、一座體育館。", unit:"school" },
+            { p:"小賣部／停車場在哪裏？", c:["小賣部正門左；停車場前門旁","小賣部正門右；停車場後門旁","小賣部後門旁；停車場正門右","兩者都在正門左"], a:1, e:"正門右小賣部；後門旁停車場。", unit:"school" },
+            { p:"這次中文測驗考得怎樣？", c:["九十多分，因為努力溫習","剛剛合格，因為沒有溫習","不合格，因為怕考試","滿分"], a:1, e:"沒有溫習，剛剛合格。", unit:"school" },
+            { p:"（錄音稿）天天一家人移民到哪裏？", c:["上海","英國","青衣","美國"], a:1, e:"移民到英國。", unit:"school" },
+            { p:"今年中秋去哪裏吃晚飯？", c:["舊茶樓","新開的自助餐廳","公園草地","學校小賣部"], a:1, e:"新開的自助餐廳。", unit:"moon" },
+            { p:"為什麼餓得不得了？", c:["沒吃早餐","下午有足球訓練","走了很多路","在溫習"], a:1, e:"下午有足球訓練。", unit:"moon" },
+            { p:"覺得哪種甜品最好？", c:["月餅","糖醋排骨","朱古力雪糕","麻婆豆腐"], a:2, e:"朱古力雪糕。", unit:"moon" },
+            { p:"晚飯後做了什麼？", c:["回家睡覺","去公園吃月餅賞月","回校溫習","去停車場"], a:1, e:"公園吃月餅賞月。", unit:"moon" },
+            { p:"中秋傳統食品是？", c:["叉燒","月餅","龍蝦伊麵","烤牛扒"], a:1, e:"月餅。", unit:"moon" }
+        ]
+    };
+
+    let f2Scope = 'all';
+    let f2FlipState = null, f2Mem = null, f2Meas = null, f2Arena = null;
+
+    function f2Shuffle(arr){
+        const a = arr.slice();
+        for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; }
+        return a;
+    }
+    function f2Filter(list){
+        if (f2Scope === 'all') return list.slice();
+        return list.filter(x => x.unit === f2Scope);
+    }
+    function f2GetScope(){
+        const el = document.querySelector('input[name="f2scope"]:checked');
+        return el ? el.value : 'all';
+    }
+    function f2ScopeLabel(){
+        return ({all:'全部', school:'〈我的學校〉', moon:'〈過中秋節〉', quiz:'第一次小測'})[f2Scope] || f2Scope;
+    }
+    function f2Beep(ok){
+        try {
+            const Ctx = window.AudioContext || window.webkitAudioContext; if (!Ctx) return;
+            const ctx = new Ctx(); const o = ctx.createOscillator(); const g = ctx.createGain();
+            o.connect(g); g.connect(ctx.destination); o.type='square'; o.frequency.value = ok?660:220; g.gain.value=0.04;
+            o.start(); setTimeout(function(){ try{o.stop(); ctx.close();}catch(e){} }, ok?120:180);
+        } catch(e) {}
+    }
+    function f2Progress(cur,max){
+        const pct = max ? Math.round(cur/max*100) : 0;
+        return '<div class="mb-3"><div class="flex justify-between text-xs text-amber-200 mb-1"><span>PROGRESS</span><span>'+cur+'/'+max+' ('+pct+'%)</span></div><div class="f2-pixel-bar"><span style="width:'+pct+'%"></span></div></div>';
+    }
+    function f2Shell(title, body){
+        return '<div class="f2-arcade mb-4"><div class="flex flex-wrap justify-between gap-2 mb-3">'
+            + '<h3 class="text-xl font-black text-amber-300">'+title+'</h3>'
+            + '<div class="flex gap-2">'
+            + '<button type="button" onclick="openGameOptions()" class="f2-chunky bg-amber-300 text-slate-900 px-3 py-1 text-sm">遊戲選項</button>'
+            + '<button type="button" onclick="exitF2Game()" class="f2-chunky bg-slate-200 text-slate-900 px-3 py-1 text-sm">回主頁</button>'
+            + '</div></div>'
+            + '<div class="text-xs text-indigo-200 mb-2">範圍：'+f2ScopeLabel()+'</div>'
+            + body + '</div>';
+    }
+
+    function openGameOptions(){
+        const box = document.getElementById('game-options-container');
+        if (!box) return;
+        box.classList.remove('hidden');
+        box.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+    function exitF2Game(){
+        const box = document.getElementById('game-options-container');
+        if (box) box.classList.add('hidden');
+        if (typeof window.renderHome === 'function') window.renderHome();
+    }
+    function startScopedGame(kind){
+        f2Scope = f2GetScope();
+        const box = document.getElementById('game-options-container');
+        if (box) box.classList.add('hidden');
+        if (kind === 'flip') startF2Flip();
+        else if (kind === 'memory') startF2Memory();
+        else if (kind === 'measure') startF2Measure();
+        else if (kind === 'arena') startF2Arena();
+    }
+
+    function startF2Flip(){
+        let deck = f2Filter(F2_DATA.flip);
+        if (!deck.length) deck = F2_DATA.flip.slice();
+        f2FlipState = { deck: f2Shuffle(deck), i:0, known:0, flipped:false };
+        renderF2Flip();
+    }
+    function renderF2Flip(){
+        const st = f2FlipState; const card = st.deck[st.i];
+        const flipCls = st.flipped ? 'is-flipped' : '';
+        const disabled = st.flipped ? '' : 'disabled';
+        const body = f2Progress(st.i, st.deck.length)
+            + '<div class="f2-card-flip '+flipCls+'" onclick="f2ToggleFlip()"><div class="f2-card-inner">'
+            + '<div class="f2-card-face f2-card-front"><div class="text-xs font-bold mb-2 opacity-60">正面 · 點擊翻卡</div><div class="text-4xl font-black">'+card.front+'</div></div>'
+            + '<div class="f2-card-face f2-card-back"><div class="text-xs font-bold mb-2 opacity-60">背面</div><div class="text-2xl font-black">'+card.back+'</div><div class="text-sm mt-3 opacity-80">提示：'+card.tip+'</div></div>'
+            + '</div></div>'
+            + '<div class="flex flex-wrap gap-2 mt-4">'
+            + '<button type="button" '+disabled+' onclick="f2FlipNext(false)" class="f2-chunky bg-orange-300 text-slate-900 px-4 py-2">再溫習 ↻</button>'
+            + '<button type="button" '+disabled+' onclick="f2FlipNext(true)" class="f2-chunky bg-green-400 text-slate-900 px-4 py-2">認識了 ✓</button>'
+            + '</div><div class="text-xs text-indigo-200 mt-3">已標記認識：'+st.known+'</div>';
+        document.getElementById('content').innerHTML = f2Shell('🃏 字卡翻卡', body);
+    }
+    function f2ToggleFlip(){ f2FlipState.flipped = !f2FlipState.flipped; renderF2Flip(); }
+    function f2FlipNext(known){
+        if (!f2FlipState.flipped) return;
+        if (known) { f2FlipState.known++; f2Beep(true); } else f2Beep(false);
+        if (f2FlipState.i + 1 >= f2FlipState.deck.length) {
+            f2ShowResult('字卡翻卡完成', f2FlipState.known, f2FlipState.deck.length, '「認識了」越多表示越熟。');
+            return;
+        }
+        f2FlipState.i++; f2FlipState.flipped=false; renderF2Flip();
+    }
+
+    function startF2Memory(){
+        let base = f2Filter(F2_DATA.flip);
+        if (!base.length) base = F2_DATA.flip.slice();
+        base = f2Shuffle(base).slice(0, Math.min(8, base.length));
+        const cards = [];
+        base.forEach(function(c, idx){
+            cards.push({ key:'z'+idx, pair:idx, text:c.front });
+            cards.push({ key:'e'+idx, pair:idx, text:c.back });
+        });
+        f2Mem = { cards:f2Shuffle(cards), open:[], matched:[], moves:0, lock:false, total:base.length };
+        renderF2Memory();
+    }
+    function renderF2Memory(){
+        const m = f2Mem;
+        const grid = m.cards.map(function(c){
+            const isOpen = m.open.indexOf(c.key)>=0 || m.matched.indexOf(c.pair)>=0;
+            const cls = m.matched.indexOf(c.pair)>=0 ? 'matched' : (isOpen ? 'open' : '');
+            return '<button type="button" class="f2-mem '+cls+' p-2 text-xs md:text-sm" onclick="f2MemTap(\''+c.key+'\')">'+(isOpen?c.text:'❓')+'</button>';
+        }).join('');
+        const body = '<div class="text-sm text-indigo-100 mb-2">步數 '+m.moves+' · 已配 '+m.matched.length+'/'+m.total+'</div><div class="grid grid-cols-4 gap-2">'+grid+'</div>';
+        document.getElementById('content').innerHTML = f2Shell('🧠 記憶配對', body);
+        if (m.matched.length === m.total && m.total>0){
+            const score = Math.max(0, m.total*2 - Math.max(0, m.moves - m.total));
+            setTimeout(function(){ f2ShowResult('記憶配對完成', score, m.total*2, '共用 '+m.moves+' 步。'); }, 350);
+        }
+    }
+    function f2MemTap(key){
+        const m = f2Mem; if (m.lock) return;
+        const card = m.cards.find(function(c){ return c.key===key; });
+        if (!card || m.open.indexOf(key)>=0 || m.matched.indexOf(card.pair)>=0) return;
+        m.open.push(key);
+        if (m.open.length < 2) { renderF2Memory(); return; }
+        m.moves++;
+        const a = m.cards.find(function(c){ return c.key===m.open[0]; });
+        const b = m.cards.find(function(c){ return c.key===m.open[1]; });
+        if (a.pair === b.pair){ m.matched.push(a.pair); m.open=[]; f2Beep(true); renderF2Memory(); }
+        else {
+            m.lock=true; f2Beep(false); renderF2Memory();
+            setTimeout(function(){ m.open=[]; m.lock=false; renderF2Memory(); }, 700);
+        }
+    }
+
+    function startF2Measure(){
+        let deck = f2Filter(F2_DATA.measure);
+        if (!deck.length) deck = F2_DATA.measure.slice();
+        f2Meas = { deck:f2Shuffle(deck), i:0, score:0, picked:null };
+        renderF2Measure();
+    }
+    function renderF2Measure(){
+        const st=f2Meas, q=st.deck[st.i];
+        const shown = q.s.replace('______', st.picked ? '【'+st.picked+'】' : '【　】');
+        const opts = q.opts.map(function(o){
+            let extra='bg-violet-200 text-slate-900';
+            if (st.picked){
+                if (o===q.a) extra='bg-green-400 text-slate-900';
+                else if (o===st.picked) extra='bg-rose-400 text-white';
+            }
+            return '<button type="button" '+(st.picked?'disabled':'')+' onclick="f2MeasPick(\''+o+'\')" class="f2-chunky '+extra+' px-4 py-3 text-xl">'+o+'</button>';
+        }).join('');
+        const body = f2Progress(st.i, st.deck.length)
+            + '<div class="text-sm text-amber-200 mb-2">SCORE '+st.score+'</div>'
+            + '<div class="bg-slate-900/50 border-2 border-amber-300 rounded-xl p-4 text-lg mb-4">'+shown+'</div>'
+            + '<div class="flex flex-wrap gap-2">'+opts+'</div>'
+            + (st.picked ? '<div class="mt-4"><button type="button" onclick="f2MeasNext()" class="f2-chunky bg-amber-300 text-slate-900 px-5 py-2">下一題 ➡</button></div>' : '');
+        document.getElementById('content').innerHTML = f2Shell('🔢 量詞點選', body);
+    }
+    function f2MeasPick(o){
+        if (f2Meas.picked) return;
+        f2Meas.picked=o;
+        const ok = o===f2Meas.deck[f2Meas.i].a;
+        if (ok) f2Meas.score++;
+        f2Beep(ok); renderF2Measure();
+    }
+    function f2MeasNext(){
+        if (f2Meas.i+1 >= f2Meas.deck.length){
+            f2ShowResult('量詞挑戰完成', f2Meas.score, f2Meas.deck.length, '量詞來自小測與課文。');
+            return;
+        }
+        f2Meas.i++; f2Meas.picked=null; renderF2Measure();
+    }
+
+    function startF2Arena(){
+        let deck = f2Filter(F2_DATA.arena);
+        if (!deck.length) deck = F2_DATA.arena.slice();
+        f2Arena = { deck:f2Shuffle(deck), i:0, score:0, picked:null };
+        renderF2Arena();
+    }
+    function renderF2Arena(){
+        const st=f2Arena, q=st.deck[st.i];
+        const choices = q.c.map(function(c, idx){
+            let extra='bg-indigo-100 text-slate-900';
+            if (st.picked!==null){
+                if (idx===q.a) extra='bg-green-400 text-slate-900';
+                else if (idx===st.picked) extra='bg-rose-400 text-white';
+            }
+            return '<button type="button" '+(st.picked!==null?'disabled':'')+' onclick="f2ArenaPick('+idx+')" class="f2-chunky '+extra+' w-full text-left px-4 py-3 mb-2">'+String.fromCharCode(65+idx)+'. '+c+'</button>';
+        }).join('');
+        const body = f2Progress(st.i, st.deck.length)
+            + '<div class="text-xs text-pink-200 mb-1">SCORE '+st.score+'</div>'
+            + '<div class="text-lg font-bold text-white mb-3">'+q.p+'</div>'+choices
+            + (st.picked!==null ? '<div class="mt-2 p-3 rounded-lg bg-slate-900/60 border border-amber-300 text-sm">'+(st.picked===q.a?'答對了！✓ ':'再想想～✗ ')+q.e+'<div class="mt-3"><button type="button" onclick="f2ArenaNext()" class="f2-chunky bg-amber-300 text-slate-900 px-5 py-2">下一題 ➡</button></div></div>' : '');
+        document.getElementById('content').innerHTML = f2Shell('🏫🌕 校園·中秋擂台', body);
+    }
+    function f2ArenaPick(idx){
+        if (f2Arena.picked!==null) return;
+        f2Arena.picked=idx;
+        const ok = idx===f2Arena.deck[f2Arena.i].a;
+        if (ok) f2Arena.score++;
+        f2Beep(ok); renderF2Arena();
+    }
+    function f2ArenaNext(){
+        if (f2Arena.i+1 >= f2Arena.deck.length){
+            f2ShowResult('擂台完成', f2Arena.score, f2Arena.deck.length, '課文理解題。');
+            return;
+        }
+        f2Arena.i++; f2Arena.picked=null; renderF2Arena();
+    }
+
+    function f2ShowResult(title, score, max, note){
+        const pct = max ? Math.round(score/max*100) : 0;
+        const body = '<div class="text-4xl font-black text-amber-300 mb-2">'+score+' / '+max+'</div>'
+            + '<div class="text-indigo-100 mb-2">'+pct+'% · '+note+'</div>'+f2Progress(score,max)
+            + '<div class="flex flex-wrap gap-2 mt-4">'
+            + '<button type="button" onclick="openGameOptions()" class="f2-chunky bg-amber-300 text-slate-900 px-5 py-2">再選遊戲</button>'
+            + '<button type="button" onclick="exitF2Game()" class="f2-chunky bg-slate-200 text-slate-900 px-5 py-2">回主頁</button></div>';
+        document.getElementById('content').innerHTML = f2Shell('🏆 '+title, body);
+        f2Beep(pct>=60);
+    }
+
+    window.openGameOptions = openGameOptions;
+    window.startScopedGame = startScopedGame;
+    window.exitF2Game = exitF2Game;
+    window.f2ToggleFlip = f2ToggleFlip;
+    window.f2FlipNext = f2FlipNext;
+    window.f2MemTap = f2MemTap;
+    window.f2MeasPick = f2MeasPick;
+    window.f2MeasNext = f2MeasNext;
+    window.f2ArenaPick = f2ArenaPick;
+    window.f2ArenaNext = f2ArenaNext;
+
 </script>
 </body>
 </html>
